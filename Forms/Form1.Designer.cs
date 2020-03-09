@@ -42,6 +42,7 @@
             this.pathHistoryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.directoryControllerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btn_up = new System.Windows.Forms.Button();
+            this.btn_next = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pathHistoryBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.directoryControllerBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -107,7 +108,7 @@
             // btn_Back
             // 
             this.btn_Back.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_Back.Location = new System.Drawing.Point(13, 7);
+            this.btn_Back.Location = new System.Drawing.Point(12, 8);
             this.btn_Back.Name = "btn_Back";
             this.btn_Back.Size = new System.Drawing.Size(75, 26);
             this.btn_Back.TabIndex = 7;
@@ -131,7 +132,7 @@
             this.comboBox_drives.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_drives.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBox_drives.FormattingEnabled = true;
-            this.comboBox_drives.Location = new System.Drawing.Point(136, 10);
+            this.comboBox_drives.Location = new System.Drawing.Point(217, 10);
             this.comboBox_drives.Name = "comboBox_drives";
             this.comboBox_drives.Size = new System.Drawing.Size(47, 24);
             this.comboBox_drives.TabIndex = 9;
@@ -140,9 +141,9 @@
             // comboBox_path
             // 
             this.comboBox_path.FormattingEnabled = true;
-            this.comboBox_path.Location = new System.Drawing.Point(189, 12);
+            this.comboBox_path.Location = new System.Drawing.Point(270, 12);
             this.comboBox_path.Name = "comboBox_path";
-            this.comboBox_path.Size = new System.Drawing.Size(855, 21);
+            this.comboBox_path.Size = new System.Drawing.Size(761, 21);
             this.comboBox_path.TabIndex = 10;
             this.comboBox_path.DropDown += new System.EventHandler(this.comboBox_path_DropDown);
             this.comboBox_path.SelectionChangeCommitted += new System.EventHandler(this.comboBox_path_SelectionChangeCommitted);
@@ -160,18 +161,31 @@
             // btn_up
             // 
             this.btn_up.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_up.Location = new System.Drawing.Point(94, 7);
+            this.btn_up.Location = new System.Drawing.Point(94, 8);
             this.btn_up.Name = "btn_up";
             this.btn_up.Size = new System.Drawing.Size(36, 26);
             this.btn_up.TabIndex = 7;
             this.btn_up.Text = "Up";
             this.btn_up.UseVisualStyleBackColor = true;
+            this.btn_up.Click += new System.EventHandler(this.btn_up_Click);
+            // 
+            // btn_next
+            // 
+            this.btn_next.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btn_next.Location = new System.Drawing.Point(136, 8);
+            this.btn_next.Name = "btn_next";
+            this.btn_next.Size = new System.Drawing.Size(75, 26);
+            this.btn_next.TabIndex = 11;
+            this.btn_next.Text = "Next";
+            this.btn_next.UseVisualStyleBackColor = true;
+            this.btn_next.Click += new System.EventHandler(this.btn_next_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1139, 635);
+            this.Controls.Add(this.btn_next);
             this.Controls.Add(this.comboBox_path);
             this.Controls.Add(this.comboBox_drives);
             this.Controls.Add(this.btn_go);
@@ -185,8 +199,6 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pathHistoryBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.directoryControllerBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -207,6 +219,7 @@
         private System.Windows.Forms.BindingSource pathHistoryBindingSource;
         private System.Windows.Forms.BindingSource directoryControllerBindingSource;
         private System.Windows.Forms.Button btn_up;
+        private System.Windows.Forms.Button btn_next;
     }
 }
 

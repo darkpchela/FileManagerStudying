@@ -10,11 +10,10 @@ namespace FileManager.Classes
     class DirectoryController
     {
         public Action excActionPath;
-        public List<string> pathHistory { get; private set; } = new List<string>();
+        public Action DirectoryLoaded;
 
-        private PathHistory _pathHistory = new PathHistory();
+        public PathHistory pathHistory = new PathHistory();
         public string currentPath { get; private set; }
-
 
         public void SetPath(string path)
         {
@@ -43,31 +42,29 @@ namespace FileManager.Classes
                 return false;
             }
         }
-        public void ClearHistory()
-        {
-            pathHistory.Clear();
-        }
         public void LoadDirectory(out string[] files, out string[] directories)
         {
-            DirectoryInfo dirInfo;
-            FileInfo[] fileInfo;
+            DirectoryInfo   dirInfo;
+            FileInfo[]      fileInfo;
             DirectoryInfo[] directoriesInfo;
 
             if (IsDirectory(currentPath))
             {
-                dirInfo = new DirectoryInfo(currentPath);
-                fileInfo = dirInfo.GetFiles();
+                dirInfo         = new DirectoryInfo(currentPath);
+                fileInfo        = dirInfo.GetFiles();
                 directoriesInfo = dirInfo.GetDirectories();
-                pathHistory.Add(currentPath);
+
+                    if (!pathHistory.globalHistory.Contains(currentPath))
+                         pathHistory.globalHistory.Add(currentPath); 
             }
             else
             {
-                dirInfo = new DirectoryInfo(pathHistory.Last());
-                fileInfo = dirInfo.GetFiles();
+                dirInfo         = new DirectoryInfo(pathHistory.globalHistory.Last());
+                fileInfo        = dirInfo.GetFiles();
                 directoriesInfo = dirInfo.GetDirectories();
             }
 
-            files = FileSystemInfoNames(fileInfo);
+            files       = FileSystemInfoNames(fileInfo);
             directories = FileSystemInfoNames(directoriesInfo);
 
             string[] FileSystemInfoNames<T>(T[] list) where T : FileSystemInfo

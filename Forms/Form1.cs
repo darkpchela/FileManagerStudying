@@ -86,9 +86,9 @@ namespace FileManager
         private void comboBox_path_DropDown(object sender, EventArgs e)
         {
             comboBox_path.Items.Clear();
-            if (_directoryController.pathHistory.Count>0)
+            if (_directoryController.pathHistory.localHistory.Count>0)
             {
-                List<string> tempHistoryPath = _directoryController.pathHistory;
+                List<string> tempHistoryPath = _directoryController.pathHistory.globalHistory;
                 tempHistoryPath = tempHistoryPath.Distinct().ToList();
                 tempHistoryPath.Reverse();
                 tempHistoryPath = tempHistoryPath.Take(20).ToList();
@@ -104,13 +104,19 @@ namespace FileManager
 
         private void btn_Back_Click(object sender, EventArgs e)
         {
-            //pathHistoryDeltaIndex++;
-            //int index = _directoryController.pathHistory.Count - pathHistoryDeltaIndex;
-            //if (index >= 0)
-            //{ 
-            //    tempPath = _directoryController.pathHistory.ElementAt(index);
-            //    TryAcceptChanges();
-            //}
+            tempPath = _directoryController.pathHistory.GetPreviousPath();
+            TryAcceptChanges();
+        }
+
+        private void btn_up_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_next_Click(object sender, EventArgs e)
+        {
+            tempPath = _directoryController.pathHistory.GetNextPath();
+            TryAcceptChanges();
         }
     }
 }
