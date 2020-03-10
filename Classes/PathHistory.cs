@@ -19,9 +19,9 @@ namespace FileManager.Classes
         {
             if (!IsMoving)
             {
-                IsMoving = true;
-                localHistory = globalHistory;
-                localIndex = (localHistory.Count - 1) < 0 ? 0 : (localHistory.Count - 1);
+                IsMoving     = true;
+                localHistory = new List<string>(globalHistory);
+                localIndex   = (localHistory.Count - 1) < 0 ? 0 : (localHistory.Count - 1);
             }
         }
 
