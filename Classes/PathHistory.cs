@@ -13,32 +13,33 @@ namespace FileManager.Classes
 
         private int localIndex = 0;
 
-        private bool IsMoving = false;
+        private bool IsShifting = false;
 
-        private void StartMoving()
+        private void StartShifting()
         {
-            if (!IsMoving)
+            if (!IsShifting)
             {
-                IsMoving     = true;
+                IsShifting   = true;
                 localHistory = new List<string>(globalHistory);
                 localIndex   = (localHistory.Count - 1) < 0 ? 0 : (localHistory.Count - 1);
             }
         }
 
-        public void StopMoving()
+        public void StopShifting()
         {
-            IsMoving     = false;
+            IsShifting = false;
         }
 
         public string GetPreviousPath()
         {
-            StartMoving();
             string path;
+
+            StartShifting();
             localIndex--;
-            if (localIndex >= 0)
+
+            if (localIndex > 0)
             {
-                path = localHistory.ElementAt(localIndex);
-                globalHistory.Add(path);
+                path       = localHistory.ElementAt(localIndex);
                 
                 return path;
             }
@@ -53,26 +54,33 @@ namespace FileManager.Classes
 
         public string GetNextPath()
         {
-            StartMoving();
             string path;
-            localIndex++;
-            if (localIndex <= localHistory.Count - 1)
-            {
 
-                path = localHistory.ElementAt(localIndex);
-                globalHistory.Add(path);
+            StartShifting();
+            localIndex++;
+
+            if (localIndex < localHistory.Count - 1)
+            {
+                path       = localHistory.ElementAt(localIndex);
+
                 return path;
             }
             else
             {
                 localIndex = localHistory.Count-1;
                 path       = localHistory.ElementAt(localIndex);
+
                 return path;
             }
         }
         public void ClearHistory()
         {
             globalHistory.Clear();
+        }
+
+        public void UpdateHistory(string path)
+        {
+            globalHistory.Add(path);
         }
     }
 }

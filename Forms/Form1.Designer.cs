@@ -154,10 +154,6 @@
             this.pathHistoryBindingSource.DataMember = "pathHistory";
             this.pathHistoryBindingSource.DataSource = this.directoryControllerBindingSource;
             // 
-            // directoryControllerBindingSource
-            // 
-            this.directoryControllerBindingSource.DataSource = typeof(FileManager.Classes.DirectoryController);
-            // 
             // btn_up
             // 
             this.btn_up.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));

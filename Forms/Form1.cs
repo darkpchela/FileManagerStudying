@@ -14,30 +14,30 @@ namespace FileManager
     public partial class Form1 : Form
     {
         string tempPath = "";
-        DirectoryController _directoryController = new DirectoryController();
-        string[] tempFiles;
-        string[] tempDirectories;
+        PathController _pathController = new PathController();
         public Form1()
         {
             InitializeComponent();
         }
 
+        private void RefreshPathText()
+        {
+            comboBox_path.Text = tempPath;
+        }
         private void TryAcceptChanges()
         {
-            if (_directoryController.IsAccessiblePath(tempPath))
-            {
-                _directoryController.SetPath(tempPath);
-                LoadListView();
-            }
+            _pathController.SetPath(tempPath);
+            LoadListView();
+
             void LoadListView()
             {
                 listView_main.Clear();
-                _directoryController.LoadDirectory(out tempFiles, out tempDirectories);
-                foreach (var item in tempDirectories)
+                _pathController.LoadDirectory();
+                foreach (var item in _pathController.currentLoadedDirectories)
                 {
                     listView_main.Items.Add(item);
                 }
-                foreach (var item in tempFiles)
+                foreach (var item in _pathController.currentLoadedFiles)
                 {
                     listView_main.Items.Add(item);
                 }
@@ -46,16 +46,21 @@ namespace FileManager
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _directoryController.excActionPath += () => MessageBox.Show("Not accessible path!");
+            _pathController.excActionPath += () => MessageBox.Show("Not accessible path!");
+
             comboBox_drives.Items.AddRange(WindowsDrivesInfo.drivesNames);
             comboBox_drives.SelectedIndex = 0;
+
             comboBox_path.Text = comboBox_drives.SelectedItem.ToString();
-            tempPath = comboBox_path.Text;
+
+            tempPath           = comboBox_path.Text;
+
             TryAcceptChanges();
         }
 
         private void btn_go_Click(object sender, EventArgs e)
         {
+            _pathController.pathHistory.StopShifting();
             tempPath = comboBox_path.Text;
             TryAcceptChanges();
         }
@@ -64,17 +69,19 @@ namespace FileManager
         {
             string currentSlectedItem = e.Item.Text;
 
-            tempPath = _directoryController.currentPath +"\\" + currentSlectedItem;
-            if (_directoryController.IsDirectory(tempPath))
-            {
-                comboBox_path.Text = tempPath;
-            }
+            tempPath = _pathController.currentPath + "\\" + currentSlectedItem;
+
+            if (_pathController.loader.IsDirectory(tempPath))
+                { RefreshPathText(); }
+        
         }
 
         private void comboBox_drives_SelectionChangeCommitted(object sender, EventArgs e)
         {
             comboBox_path.Text = comboBox_drives.SelectedItem.ToString();
-            tempPath = comboBox_path.Text;
+            tempPath           = comboBox_path.Text;
+
+            _pathController.pathHistory.StopShifting();
             TryAcceptChanges();
         }
 
@@ -86,9 +93,9 @@ namespace FileManager
         private void comboBox_path_DropDown(object sender, EventArgs e)
         {
             comboBox_path.Items.Clear();
-            if (_directoryController.pathHistory.localHistory.Count>0)
+            if (_pathController.pathHistory.globalHistory.Count>0)
             {
-                List<string> tempHistoryPath = _directoryController.pathHistory.globalHistory;
+                List<string> tempHistoryPath = _pathController.pathHistory.globalHistory;
                 tempHistoryPath = tempHistoryPath.Distinct().ToList();
                 tempHistoryPath.Reverse();
                 tempHistoryPath = tempHistoryPath.Take(20).ToList();
@@ -104,18 +111,25 @@ namespace FileManager
 
         private void btn_Back_Click(object sender, EventArgs e)
         {
-            tempPath = _directoryController.pathHistory.GetPreviousPath();
+            tempPath = _pathController.pathHistory.GetPreviousPath();
+            RefreshPathText();
             TryAcceptChanges();
         }
 
         private void btn_up_Click(object sender, EventArgs e)
         {
+            _pathController.SetParentDirectoryPath();
 
+            tempPath = _pathController.currentPath;
+
+            RefreshPathText();
+            TryAcceptChanges();
         }
 
         private void btn_next_Click(object sender, EventArgs e)
         {
-            tempPath = _directoryController.pathHistory.GetNextPath();
+            tempPath = _pathController.pathHistory.GetNextPath();
+            RefreshPathText();
             TryAcceptChanges();
         }
     }

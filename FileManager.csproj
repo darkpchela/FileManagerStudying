@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="Classes\DirectoryLoader.cs" />
     <Compile Include="Classes\PathHistory.cs" />
-    <Compile Include="Classes\DirectoryController.cs" />
+    <Compile Include="Classes\PathController.cs" />
     <Compile Include="Classes\WindowsDrivesInfo.cs" />
     <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
