@@ -29,12 +29,12 @@ namespace FileManager.Classes
         public void SetParentDirectoryPath()
         {
             try   { currentPath = Directory.GetParent(currentPath).ToString(); }
-            catch { excActionPath(); }
+            catch { excActionPath?.Invoke(); }
         }
         public bool IsAccessiblePath(string path)
         {
             try   { Directory.GetFiles(path);   return true;  }
-            catch { excActionPath();            return false; }
+            catch { excActionPath?.Invoke();    return false; }
         }
         
         public void LoadDirectory()

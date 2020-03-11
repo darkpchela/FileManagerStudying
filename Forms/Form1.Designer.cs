@@ -53,11 +53,12 @@
             this.listView_main.LargeImageList = this.imageList_Icons;
             this.listView_main.Location = new System.Drawing.Point(12, 39);
             this.listView_main.Name = "listView_main";
-            this.listView_main.Size = new System.Drawing.Size(1117, 485);
+            this.listView_main.Size = new System.Drawing.Size(1100, 485);
             this.listView_main.SmallImageList = this.imageList_Icons;
             this.listView_main.TabIndex = 1;
             this.listView_main.UseCompatibleStateImageBehavior = false;
             this.listView_main.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listView_main_ItemSelectionChanged);
+            this.listView_main.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView_main_MouseDoubleClick);
             // 
             // imageList_Icons
             // 
@@ -119,7 +120,7 @@
             // btn_go
             // 
             this.btn_go.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btn_go.Location = new System.Drawing.Point(1050, 7);
+            this.btn_go.Location = new System.Drawing.Point(1037, 10);
             this.btn_go.Name = "btn_go";
             this.btn_go.Size = new System.Drawing.Size(75, 23);
             this.btn_go.TabIndex = 8;
@@ -140,10 +141,11 @@
             // 
             // comboBox_path
             // 
+            this.comboBox_path.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBox_path.FormattingEnabled = true;
-            this.comboBox_path.Location = new System.Drawing.Point(270, 12);
+            this.comboBox_path.Location = new System.Drawing.Point(270, 10);
             this.comboBox_path.Name = "comboBox_path";
-            this.comboBox_path.Size = new System.Drawing.Size(761, 21);
+            this.comboBox_path.Size = new System.Drawing.Size(761, 24);
             this.comboBox_path.TabIndex = 10;
             this.comboBox_path.DropDown += new System.EventHandler(this.comboBox_path_DropDown);
             this.comboBox_path.SelectionChangeCommitted += new System.EventHandler(this.comboBox_path_SelectionChangeCommitted);
@@ -180,7 +182,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1139, 635);
+            this.ClientSize = new System.Drawing.Size(1124, 635);
             this.Controls.Add(this.btn_next);
             this.Controls.Add(this.comboBox_path);
             this.Controls.Add(this.comboBox_drives);

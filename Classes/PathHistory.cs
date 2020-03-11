@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 
 namespace FileManager.Classes
 {
-    class PathHistory
+     class PathHistory
     {
+        public event EventHandler HistoryAtFrontEnd;
+        //protected virtual void OnHistoryAtFrontEnd(EventArgs e)
+        //{
+        //    EventHandler handler = HistoryAtFrontEnd;
+        //    handler?.Invoke(this, e);
+        //}
+        //public Action historyAtBackEnd;
         public List<string> localHistory  { get; private set; }  = new List<string>();
         public List<string> globalHistory { get; private set; }  = new List<string>();
-
-        private int localIndex = 0;
+        public int          localIndex    { get; private set; }  = 0;
 
         private bool IsShifting = false;
 
@@ -47,6 +53,8 @@ namespace FileManager.Classes
             {
                 localIndex = 0;
                 path       = localHistory.ElementAt(localIndex);
+
+                //historyAtBackEnd?.Invoke();
                 
                 return path;
             }
@@ -69,6 +77,8 @@ namespace FileManager.Classes
             {
                 localIndex = localHistory.Count-1;
                 path       = localHistory.ElementAt(localIndex);
+
+                //historyAtFrontEnd?.Invoke();
 
                 return path;
             }

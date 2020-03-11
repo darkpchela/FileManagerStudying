@@ -15,11 +15,7 @@ namespace FileManager
     {
         string tempPath = "";
         PathController _pathController = new PathController();
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
+        
         private void RefreshPathText()
         {
             comboBox_path.Text = tempPath;
@@ -43,7 +39,10 @@ namespace FileManager
                 }
             }
         }
-
+        public Form1()
+        {
+            InitializeComponent();
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
             _pathController.excActionPath += () => MessageBox.Show("Not accessible path!");
@@ -58,24 +57,6 @@ namespace FileManager
             TryAcceptChanges();
         }
 
-        private void btn_go_Click(object sender, EventArgs e)
-        {
-            _pathController.pathHistory.StopShifting();
-            tempPath = comboBox_path.Text;
-            TryAcceptChanges();
-        }
-
-        private void listView_main_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            string currentSlectedItem = e.Item.Text;
-
-            tempPath = _pathController.currentPath + "\\" + currentSlectedItem;
-
-            if (_pathController.loader.IsDirectory(tempPath))
-                { RefreshPathText(); }
-        
-        }
-
         private void comboBox_drives_SelectionChangeCommitted(object sender, EventArgs e)
         {
             comboBox_path.Text = comboBox_drives.SelectedItem.ToString();
@@ -87,7 +68,10 @@ namespace FileManager
 
         private void comboBox_path_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            tempPath = ((ComboBox)sender).SelectedItem.ToString();
 
+            RefreshPathText();
+            TryAcceptChanges();
         }
 
         private void comboBox_path_DropDown(object sender, EventArgs e)
@@ -112,6 +96,7 @@ namespace FileManager
         private void btn_Back_Click(object sender, EventArgs e)
         {
             tempPath = _pathController.pathHistory.GetPreviousPath();
+
             RefreshPathText();
             TryAcceptChanges();
         }
@@ -130,6 +115,29 @@ namespace FileManager
         {
             tempPath = _pathController.pathHistory.GetNextPath();
             RefreshPathText();
+            TryAcceptChanges();
+        }
+
+        private void btn_go_Click(object sender, EventArgs e)
+        {
+            _pathController.pathHistory.StopShifting();
+            tempPath = comboBox_path.Text;
+            TryAcceptChanges();
+        }
+
+        private void listView_main_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            string currentSlectedItem = e.Item.Text;
+
+            tempPath = _pathController.currentPath + "\\" + currentSlectedItem;
+
+            if (_pathController.loader.IsDirectory(tempPath))
+            { RefreshPathText(); }
+
+        }
+
+        private void listView_main_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
             TryAcceptChanges();
         }
     }
