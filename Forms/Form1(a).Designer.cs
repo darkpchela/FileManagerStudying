@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.listView_main = new System.Windows.Forms.ListView();
             this.imageList_Icons = new System.Windows.Forms.ImageList(this.components);
             this.label1 = new System.Windows.Forms.Label();
@@ -39,12 +40,8 @@
             this.btn_go = new System.Windows.Forms.Button();
             this.comboBox_drives = new System.Windows.Forms.ComboBox();
             this.comboBox_path = new System.Windows.Forms.ComboBox();
-            this.pathHistoryBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.directoryControllerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btn_up = new System.Windows.Forms.Button();
             this.btn_next = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pathHistoryBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.directoryControllerBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // listView_main
@@ -62,9 +59,41 @@
             // 
             // imageList_Icons
             // 
-            this.imageList_Icons.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imageList_Icons.ImageSize = new System.Drawing.Size(48, 48);
+            this.imageList_Icons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_Icons.ImageStream")));
             this.imageList_Icons.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList_Icons.Images.SetKeyName(0, "png1.ico");
+            this.imageList_Icons.Images.SetKeyName(1, "png2.ico");
+            this.imageList_Icons.Images.SetKeyName(2, "png3.ico");
+            this.imageList_Icons.Images.SetKeyName(3, "png4.ico");
+            this.imageList_Icons.Images.SetKeyName(4, "png5.ico");
+            this.imageList_Icons.Images.SetKeyName(5, "png6.ico");
+            this.imageList_Icons.Images.SetKeyName(6, "png7.ico");
+            this.imageList_Icons.Images.SetKeyName(7, "png8.ico");
+            this.imageList_Icons.Images.SetKeyName(8, "png9.ico");
+            this.imageList_Icons.Images.SetKeyName(9, "png10.ico");
+            this.imageList_Icons.Images.SetKeyName(10, "png11.ico");
+            this.imageList_Icons.Images.SetKeyName(11, "png12.ico");
+            this.imageList_Icons.Images.SetKeyName(12, "png13.ico");
+            this.imageList_Icons.Images.SetKeyName(13, "png14.ico");
+            this.imageList_Icons.Images.SetKeyName(14, "png15.ico");
+            this.imageList_Icons.Images.SetKeyName(15, "png16.ico");
+            this.imageList_Icons.Images.SetKeyName(16, "png17.ico");
+            this.imageList_Icons.Images.SetKeyName(17, "png18.ico");
+            this.imageList_Icons.Images.SetKeyName(18, "png19.ico");
+            this.imageList_Icons.Images.SetKeyName(19, "png20.ico");
+            this.imageList_Icons.Images.SetKeyName(20, "png21.ico");
+            this.imageList_Icons.Images.SetKeyName(21, "png22.ico");
+            this.imageList_Icons.Images.SetKeyName(22, "png23.ico");
+            this.imageList_Icons.Images.SetKeyName(23, "png24.ico");
+            this.imageList_Icons.Images.SetKeyName(24, "png25.ico");
+            this.imageList_Icons.Images.SetKeyName(25, "png26.ico");
+            this.imageList_Icons.Images.SetKeyName(26, "png27.ico");
+            this.imageList_Icons.Images.SetKeyName(27, "png28.ico");
+            this.imageList_Icons.Images.SetKeyName(28, "png29.ico");
+            this.imageList_Icons.Images.SetKeyName(29, "png30.ico");
+            this.imageList_Icons.Images.SetKeyName(30, "png31.ico");
+            this.imageList_Icons.Images.SetKeyName(31, "png32.ico");
+            this.imageList_Icons.Images.SetKeyName(32, "png33.ico");
             // 
             // label1
             // 
@@ -151,11 +180,6 @@
             this.comboBox_path.SelectionChangeCommitted += new System.EventHandler(this.comboBox_path_SelectionChangeCommitted);
             this.comboBox_path.TextChanged += new System.EventHandler(this.comboBox_path_TextChanged);
             // 
-            // pathHistoryBindingSource
-            // 
-            this.pathHistoryBindingSource.DataMember = "pathHistory";
-            this.pathHistoryBindingSource.DataSource = this.directoryControllerBindingSource;
-            // 
             // btn_up
             // 
             this.btn_up.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -214,8 +238,6 @@
         private System.Windows.Forms.ImageList imageList_Icons;
         private System.Windows.Forms.ComboBox comboBox_drives;
         private System.Windows.Forms.ComboBox comboBox_path;
-        private System.Windows.Forms.BindingSource pathHistoryBindingSource;
-        private System.Windows.Forms.BindingSource directoryControllerBindingSource;
         private System.Windows.Forms.Button btn_up;
         private System.Windows.Forms.Button btn_next;
     }

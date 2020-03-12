@@ -110,7 +110,7 @@ namespace FileManager.Forms
             if (_pathController.direcoryLoader.IsDirectory(_pathController.tempPath))
             { RefreshPathText(); label_fileName.Text = ""; label_fileType.Text = ""; }
             else
-            { _fileController.SetFile(_pathController.tempPath); }
+            { comboBox_path.Text = _pathController.currentPath; _fileController.SetFile(_pathController.tempPath); }
         }
 
         private void listView_main_MouseDoubleClick(object sender, MouseEventArgs e)

@@ -28,11 +28,11 @@ namespace FileManager.Forms
                 listView_main.Clear();
                 foreach (var item in _pathController.currentLoadedDirectories)
                 {
-                    listView_main.Items.Add(item);
+                    listView_main.Items.Add(item, 4);
                 }
                 foreach (var item in _pathController.currentLoadedFiles)
                 {
-                    listView_main.Items.Add(item);
+                    listView_main.Items.Add(item, 3);
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace FileManager.Forms
             if (_fileController.FileSetted)
             {
                 label_fileName.Text += _fileController.fileInfo.FullName + " ";
-                label_fileName.Text += ((double)_fileController.fileInfo.Length) / 1024 / 1024 + "Mb"+ " ";
+                label_fileName.Text += (((double)_fileController.fileInfo.Length) / 1024 / 1024).ToString("#.##") + "Mb" + " ";
                 label_fileName.Text += _fileController.fileInfo.Attributes.ToString() + " ";
 
                 label_fileType.Text = _fileController.fileInfo.Extension;
