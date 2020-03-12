@@ -1,4 +1,4 @@
-﻿namespace FileManager
+﻿namespace FileManager.Forms
 {
     partial class Form1
     {

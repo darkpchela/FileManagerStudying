@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileManager.Classes
 {
-     class PathHistory
+     class History
     {
-        public event EventHandler HistoryAtFrontEnd;
-        //protected virtual void OnHistoryAtFrontEnd(EventArgs e)
-        //{
-        //    EventHandler handler = HistoryAtFrontEnd;
-        //    handler?.Invoke(this, e);
-        //}
-        //public Action historyAtBackEnd;
         public List<string> localHistory  { get; private set; }  = new List<string>();
         public List<string> globalHistory { get; private set; }  = new List<string>();
         public int          localIndex    { get; private set; }  = 0;
@@ -36,51 +26,47 @@ namespace FileManager.Classes
             IsShifting = false;
         }
 
-        public string GetPreviousPath()
+        public string GetPreviousElement()
         {
-            string path;
+            string element;
 
             StartShifting();
             localIndex--;
 
             if (localIndex > 0)
             {
-                path       = localHistory.ElementAt(localIndex);
+                element    = localHistory.ElementAt(localIndex);
                 
-                return path;
+                return element;
             }
             else
             {
                 localIndex = 0;
-                path       = localHistory.ElementAt(localIndex);
-
-                //historyAtBackEnd?.Invoke();
+                element    = localHistory.ElementAt(localIndex);
                 
-                return path;
+                return element;
             }
         }
 
-        public string GetNextPath()
+        public string GetNextElement()
         {
-            string path;
+            string element;
 
             StartShifting();
             localIndex++;
 
             if (localIndex < localHistory.Count - 1)
             {
-                path       = localHistory.ElementAt(localIndex);
+                element    = localHistory.ElementAt(localIndex);
 
-                return path;
+                return element;
             }
             else
             {
                 localIndex = localHistory.Count-1;
-                path       = localHistory.ElementAt(localIndex);
+                element    = localHistory.ElementAt(localIndex);
 
-                //historyAtFrontEnd?.Invoke();
-
-                return path;
+                return element;
             }
         }
         public void ClearHistory()
@@ -88,9 +74,9 @@ namespace FileManager.Classes
             globalHistory.Clear();
         }
 
-        public void UpdateHistory(string path)
+        public void UpdateHistory(string element)
         {
-            globalHistory.Add(path);
+            globalHistory.Add(element);
         }
     }
 }

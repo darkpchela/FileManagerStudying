@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileManager.Classes
 {
@@ -11,38 +8,38 @@ namespace FileManager.Classes
     {
         public Action excActionPath;
 
-        public PathHistory pathHistory = new PathHistory();
-        public DirectoryLoader loader  = new DirectoryLoader();
-        public  string[] currentLoadedFiles         { get { return _currentLoadedFiles; }       set { } }
+        public History         pathHistory     = new History();
+        public DirectoryLoader direcoryLoader  = new DirectoryLoader();
+        public  string[] currentLoadedFiles         { get { return _currentLoadedFiles;       } set { } }
         public  string[] currentLoadedDirectories   { get { return _currentLoadedDirectories; } set { } }
 
         private string[] _currentLoadedFiles;
         private string[] _currentLoadedDirectories;
         public string currentPath { get; private set; }
+        public string tempPath    { get;         set; }
 
-        public void SetPath(string path)
+        public void SetPath()
         {
-            if (Directory.Exists(path))
-                currentPath = path.Replace(@"\\", @"\"); 
+            if (IsAccessiblePath() && direcoryLoader.IsDirectory(tempPath))
+                { currentPath = tempPath.Replace(@"\\", @"\");    }
+            else
+                { currentPath = pathHistory.globalHistory.Last(); }
         }
 
         public void SetParentDirectoryPath()
         {
-            try   { currentPath = Directory.GetParent(currentPath).ToString(); }
+            try   { tempPath = Directory.GetParent(currentPath).ToString(); }
             catch { excActionPath?.Invoke(); }
         }
-        public bool IsAccessiblePath(string path)
+        public bool IsAccessiblePath()
         {
-            try   { Directory.GetFiles(path);   return true;  }
-            catch { excActionPath?.Invoke();    return false; }
+            try   { Directory.GetFiles(tempPath);   return true;  }
+            catch { excActionPath?.Invoke();        return false; }
         }
         
         public void LoadDirectory()
         {
-            if (IsAccessiblePath(currentPath) & loader.IsDirectory(currentPath))
-                { loader.LoadDirectory(currentPath, ref _currentLoadedFiles, ref _currentLoadedDirectories); }
-            else 
-                { currentPath = pathHistory.globalHistory.Last(); }
+            direcoryLoader.LoadDirectory(currentPath, ref _currentLoadedFiles, ref _currentLoadedDirectories); 
 
             if (!pathHistory.globalHistory.Any())
                 { pathHistory.UpdateHistory(currentPath); }

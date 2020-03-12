@@ -9,36 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileManager.Classes;
 
-namespace FileManager
+namespace FileManager.Forms
 {
     public partial class Form1 : Form
     {
-        string tempPath = "";
         PathController _pathController = new PathController();
-        
-        private void RefreshPathText()
-        {
-            comboBox_path.Text = tempPath;
-        }
-        private void TryAcceptChanges()
-        {
-            _pathController.SetPath(tempPath);
-            LoadListView();
-
-            void LoadListView()
-            {
-                listView_main.Clear();
-                _pathController.LoadDirectory();
-                foreach (var item in _pathController.currentLoadedDirectories)
-                {
-                    listView_main.Items.Add(item);
-                }
-                foreach (var item in _pathController.currentLoadedFiles)
-                {
-                    listView_main.Items.Add(item);
-                }
-            }
-        }
+        FileController _fileController = new FileController();
         public Form1()
         {
             InitializeComponent();
@@ -46,32 +22,33 @@ namespace FileManager
         private void Form1_Load(object sender, EventArgs e)
         {
             _pathController.excActionPath += () => MessageBox.Show("Not accessible path!");
+            _fileController.SelectedFileChanged += ShowFileInfo;
 
             comboBox_drives.Items.AddRange(WindowsDrivesInfo.drivesNames);
             comboBox_drives.SelectedIndex = 0;
 
-            comboBox_path.Text = comboBox_drives.SelectedItem.ToString();
+            comboBox_path.Text       = comboBox_drives.SelectedItem.ToString();
 
-            tempPath           = comboBox_path.Text;
+            _pathController.tempPath = comboBox_path.Text;
 
-            TryAcceptChanges();
+            ShowDirectory();
         }
 
         private void comboBox_drives_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            comboBox_path.Text = comboBox_drives.SelectedItem.ToString();
-            tempPath           = comboBox_path.Text;
+            _pathController.tempPath = comboBox_drives.Text;
 
             _pathController.pathHistory.StopShifting();
-            TryAcceptChanges();
+            RefreshPathText();
+            ShowDirectory();
         }
 
         private void comboBox_path_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            tempPath = ((ComboBox)sender).SelectedItem.ToString();
+            _pathController.tempPath = ((ComboBox)sender).SelectedItem.ToString();
 
             RefreshPathText();
-            TryAcceptChanges();
+            ShowDirectory();
         }
 
         private void comboBox_path_DropDown(object sender, EventArgs e)
@@ -95,50 +72,50 @@ namespace FileManager
 
         private void btn_Back_Click(object sender, EventArgs e)
         {
-            tempPath = _pathController.pathHistory.GetPreviousPath();
+            _pathController.tempPath = _pathController.pathHistory.GetPreviousElement();
 
             RefreshPathText();
-            TryAcceptChanges();
+            ShowDirectory();
         }
 
         private void btn_up_Click(object sender, EventArgs e)
         {
             _pathController.SetParentDirectoryPath();
 
-            tempPath = _pathController.currentPath;
-
             RefreshPathText();
-            TryAcceptChanges();
+            ShowDirectory();
         }
 
         private void btn_next_Click(object sender, EventArgs e)
         {
-            tempPath = _pathController.pathHistory.GetNextPath();
+            _pathController.tempPath = _pathController.pathHistory.GetNextElement();
             RefreshPathText();
-            TryAcceptChanges();
+            ShowDirectory();
         }
 
         private void btn_go_Click(object sender, EventArgs e)
         {
+            _pathController.tempPath = comboBox_path.Text;
+            
             _pathController.pathHistory.StopShifting();
-            tempPath = comboBox_path.Text;
-            TryAcceptChanges();
+            ShowDirectory();
         }
 
         private void listView_main_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             string currentSlectedItem = e.Item.Text;
 
-            tempPath = _pathController.currentPath + "\\" + currentSlectedItem;
+            _pathController.tempPath = _pathController.currentPath + "\\" + currentSlectedItem;
 
-            if (_pathController.loader.IsDirectory(tempPath))
-            { RefreshPathText(); }
-
+            if (_pathController.direcoryLoader.IsDirectory(_pathController.tempPath))
+            { RefreshPathText(); label_fileName.Text = ""; label_fileType.Text = ""; }
+            else
+            { _fileController.SetFile(_pathController.tempPath); }
         }
 
         private void listView_main_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            TryAcceptChanges();
+            ShowDirectory();
         }
     }
 }
