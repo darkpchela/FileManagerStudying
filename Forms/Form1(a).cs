@@ -13,8 +13,6 @@ namespace FileManager.Forms
 {
     public partial class Form1 : Form
     {
-        PathController _pathController = new PathController();
-        FileController _fileController = new FileController();
         public Form1()
         {
             InitializeComponent();
@@ -106,16 +104,36 @@ namespace FileManager.Forms
             string currentSlectedItem = e.Item.Text;
 
             _pathController.tempPath = _pathController.currentPath + "\\" + currentSlectedItem;
+            _pathController.tempPath = _pathController.tempPath.Replace(@"\\", @"\");
 
             if (_pathController.direcoryLoader.IsDirectory(_pathController.tempPath))
             { RefreshPathText(); label_fileName.Text = ""; label_fileType.Text = ""; }
             else
-            { comboBox_path.Text = _pathController.currentPath; _fileController.SetFile(_pathController.tempPath); }
+            { comboBox_path.Text = _pathController.currentPath; }
+            //------------------------------------
+            if (e.IsSelected)
+            {
+                SelectedFiles.Add(_pathController.tempPath);
+            }
+            else
+            {
+                SelectedFiles.Remove(_pathController.tempPath);
+            }
+            //-------------------------------------
+
+            _fileController.SetFile(_pathController.tempPath);
         }
 
         private void listView_main_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             ShowDirectory();
+        }
+
+        private void toolStripMenuItem_add_Click(object sender, EventArgs e)
+        {
+            _fileController.AddRangeOfFilesToBuffer(SelectedFiles);
+            SelectedFiles.Clear();
+            RefreshBuffer();
         }
     }
 }

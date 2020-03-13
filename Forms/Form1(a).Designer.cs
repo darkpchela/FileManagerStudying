@@ -42,10 +42,15 @@
             this.comboBox_path = new System.Windows.Forms.ComboBox();
             this.btn_up = new System.Windows.Forms.Button();
             this.btn_next = new System.Windows.Forms.Button();
+            this.checkedListBox_buffer = new System.Windows.Forms.CheckedListBox();
+            this.contextMenuStrip_buffer_manager = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem_add = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip_buffer_manager.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView_main
             // 
+            this.listView_main.ContextMenuStrip = this.contextMenuStrip_buffer_manager;
             this.listView_main.HideSelection = false;
             this.listView_main.LargeImageList = this.imageList_Icons;
             this.listView_main.Location = new System.Drawing.Point(12, 39);
@@ -202,11 +207,34 @@
             this.btn_next.UseVisualStyleBackColor = true;
             this.btn_next.Click += new System.EventHandler(this.btn_next_Click);
             // 
+            // checkedListBox_buffer
+            // 
+            this.checkedListBox_buffer.FormattingEnabled = true;
+            this.checkedListBox_buffer.Location = new System.Drawing.Point(653, 529);
+            this.checkedListBox_buffer.Name = "checkedListBox_buffer";
+            this.checkedListBox_buffer.Size = new System.Drawing.Size(459, 94);
+            this.checkedListBox_buffer.TabIndex = 12;
+            // 
+            // contextMenuStrip_buffer_manager
+            // 
+            this.contextMenuStrip_buffer_manager.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem_add});
+            this.contextMenuStrip_buffer_manager.Name = "contextMenuStrip_buffer_manager";
+            this.contextMenuStrip_buffer_manager.Size = new System.Drawing.Size(181, 48);
+            // 
+            // toolStripMenuItem_add
+            // 
+            this.toolStripMenuItem_add.Name = "toolStripMenuItem_add";
+            this.toolStripMenuItem_add.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem_add.Text = "Add file to buffer";
+            this.toolStripMenuItem_add.Click += new System.EventHandler(this.toolStripMenuItem_add_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1124, 635);
+            this.Controls.Add(this.checkedListBox_buffer);
             this.Controls.Add(this.btn_next);
             this.Controls.Add(this.comboBox_path);
             this.Controls.Add(this.comboBox_drives);
@@ -221,6 +249,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.contextMenuStrip_buffer_manager.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -240,6 +269,9 @@
         private System.Windows.Forms.ComboBox comboBox_path;
         private System.Windows.Forms.Button btn_up;
         private System.Windows.Forms.Button btn_next;
+        private System.Windows.Forms.CheckedListBox checkedListBox_buffer;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip_buffer_manager;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_add;
     }
 }
 

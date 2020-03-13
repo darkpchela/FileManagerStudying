@@ -13,6 +13,18 @@ namespace FileManager.Forms
 {
      public partial class Form1
      {
+        PathController _pathController = new PathController();
+        FileController _fileController = new FileController();
+        List<string>   SelectedFiles   = new List<string>();
+
+        private void RefreshBuffer()
+        {
+            checkedListBox_buffer.Items.Clear();
+            foreach (var item in _fileController.buffer.files)
+            {
+                checkedListBox_buffer.Items.Add(item);
+            }
+        }
         private void RefreshPathText()
         {
             comboBox_path.Text = _pathController.tempPath;
@@ -45,7 +57,7 @@ namespace FileManager.Forms
                 label_fileName.Text += (((double)_fileController.fileInfo.Length) / 1024 / 1024).ToString("#.##") + "Mb" + " ";
                 label_fileName.Text += _fileController.fileInfo.Attributes.ToString() + " ";
 
-                label_fileType.Text = _fileController.fileInfo.Extension;
+                label_fileType.Text  = _fileController.fileInfo.Extension;
             }
         }
     }

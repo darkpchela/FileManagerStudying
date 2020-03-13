@@ -12,10 +12,11 @@ namespace FileManager.Classes
         public Action excActionFile;
         public Action SelectedFileChanged;
 
+        public FileInfo     fileInfo      { get; private set; }
+        public FileBuffer   buffer        { get; private set; } = new FileBuffer();
+        public bool         FileSetted    { get; private set; }
 
-        public FileInfo fileInfo   { get; private set; }
-
-        public bool     FileSetted { get; private set; }
+        private string FileSettedPath;
 
         public void SetFile(string path)
         {
@@ -24,12 +25,31 @@ namespace FileManager.Classes
                 fileInfo = new FileInfo(path);
 
                 FileSetted = true;
+                FileSettedPath = path;
                 SelectedFileChanged?.Invoke();
             }
             catch
             {
                 FileSetted = false;
                 excActionFile?.Invoke();
+            }
+        }
+        public void AddFileToBuffer()
+        {
+            if (FileSetted)
+            {
+                buffer.Add(fileInfo);
+            }
+        }
+        public void AddRangeOfFilesToBuffer(List<string> paths)
+        {
+            foreach (var item in paths)
+            {
+                if (!buffer.files.Contains(item))
+                {
+                    SetFile(item);
+                    AddFileToBuffer();
+                }
             }
         }
     }
