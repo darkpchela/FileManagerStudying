@@ -34,6 +34,7 @@ namespace FileManager.Forms
             _pathController.SetPath();
             _pathController.LoadDirectory();
             LoadListView();
+            RefreshPathText();
 
             void LoadListView()
             {
@@ -58,6 +59,16 @@ namespace FileManager.Forms
                 label_fileName.Text += _fileController.fileInfo.Attributes.ToString() + " ";
 
                 label_fileType.Text  = _fileController.fileInfo.Extension;
+            }
+        }
+        private void ShowDirectoryInfo()
+        {
+            label_fileName.Text = "";
+            if (_fileController.FileSetted)
+            {
+                label_fileName.Text += _fileController.fileInfo.FullName + " ";
+
+                label_fileType.Text = "Directory";
             }
         }
     }

@@ -9,12 +9,15 @@ namespace FileManager.Classes
 {
     class FileController
     {
-        public Action excActionFile;
-        public Action SelectedFileChanged;
+        public event Action excActionFile;
+        public event Action SelectedFileChanged;
+        public event Action SelectedDirectoryChanged;
+        //public Action SelectedFileChanged;
 
-        public FileInfo     fileInfo      { get; private set; }
-        public FileBuffer   buffer        { get; private set; } = new FileBuffer();
-        public bool         FileSetted    { get; private set; }
+        public FileInfo      fileInfo      { get; private set; }
+        public DirectoryInfo directoryInfo { get; private set; }
+        public FileBuffer    buffer        { get; private set; } = new FileBuffer();
+        public bool          FileSetted    { get; private set; }
 
         private string FileSettedPath;
 
@@ -23,10 +26,13 @@ namespace FileManager.Classes
             try
             {
                 fileInfo = new FileInfo(path);
-
                 FileSetted = true;
                 FileSettedPath = path;
-                SelectedFileChanged?.Invoke();
+
+                if (fileInfo.Attributes.HasFlag(FileAttributes.Directory))
+                { SelectedDirectoryChanged?.Invoke(); }
+                else
+                { SelectedFileChanged?.Invoke();      }
             }
             catch
             {

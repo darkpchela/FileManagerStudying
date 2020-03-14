@@ -19,8 +19,9 @@ namespace FileManager.Forms
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            _pathController.excActionPath += () => MessageBox.Show("Not accessible path!");
-            _fileController.SelectedFileChanged += ShowFileInfo;
+            _pathController.excActionPath            += () => MessageBox.Show("Not accessible path!");
+            _fileController.SelectedDirectoryChanged += ShowDirectoryInfo;
+            _fileController.SelectedFileChanged      += ShowFileInfo;
 
             comboBox_drives.Items.AddRange(WindowsDrivesInfo.drivesNames);
             comboBox_drives.SelectedIndex = 0;
@@ -37,7 +38,6 @@ namespace FileManager.Forms
             _pathController.tempPath = comboBox_drives.Text;
 
             _pathController.pathHistory.StopShifting();
-            RefreshPathText();
             ShowDirectory();
         }
 
@@ -45,7 +45,6 @@ namespace FileManager.Forms
         {
             _pathController.tempPath = ((ComboBox)sender).SelectedItem.ToString();
 
-            RefreshPathText();
             ShowDirectory();
         }
 
@@ -72,7 +71,6 @@ namespace FileManager.Forms
         {
             _pathController.tempPath = _pathController.pathHistory.GetPreviousElement();
 
-            RefreshPathText();
             ShowDirectory();
         }
 
@@ -80,14 +78,12 @@ namespace FileManager.Forms
         {
             _pathController.SetParentDirectoryPath();
 
-            RefreshPathText();
             ShowDirectory();
         }
 
         private void btn_next_Click(object sender, EventArgs e)
         {
             _pathController.tempPath = _pathController.pathHistory.GetNextElement();
-            RefreshPathText();
             ShowDirectory();
         }
 
@@ -106,9 +102,7 @@ namespace FileManager.Forms
             _pathController.tempPath = _pathController.currentPath + "\\" + currentSlectedItem;
             _pathController.tempPath = _pathController.tempPath.Replace(@"\\", @"\");
 
-            if (_pathController.direcoryLoader.IsDirectory(_pathController.tempPath))
-            { RefreshPathText(); label_fileName.Text = ""; label_fileType.Text = ""; }
-            else
+            if (!_pathController.direcoryLoader.IsDirectory(_pathController.tempPath))
             { comboBox_path.Text = _pathController.currentPath; }
             //------------------------------------
             if (e.IsSelected)
