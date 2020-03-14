@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileManager.Classes;
 
-namespace FileManager.Forms
+namespace FileManager.Forms.Form1
 {
     static class Program
     {

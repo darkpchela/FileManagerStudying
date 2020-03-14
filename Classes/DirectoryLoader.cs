@@ -33,11 +33,11 @@ namespace FileManager.Classes
             string[] FileSystemInfoNames<T>(T[] list) where T : FileSystemInfo
             {
                 List<string> temp = new List<string>();
-                temp.Sort();
                 foreach (var item in list)
                 {
                     temp.Add(item.Name);
                 }
+                temp.Sort();
                 string[] array = temp.ToArray();
                 return array;
             }

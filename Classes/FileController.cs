@@ -12,22 +12,21 @@ namespace FileManager.Classes
         public event Action excActionFile;
         public event Action SelectedFileChanged;
         public event Action SelectedDirectoryChanged;
-        //public Action SelectedFileChanged;
+
+        public Manager manager = new Manager();
 
         public FileInfo      fileInfo      { get; private set; }
         public DirectoryInfo directoryInfo { get; private set; }
         public FileBuffer    buffer        { get; private set; } = new FileBuffer();
+
         public bool          FileSetted    { get; private set; }
 
-        private string FileSettedPath;
-
-        public void SetFile(string path)
+        public void SetFile(string path)//Maybe rebuild
         {
             try
             {
                 fileInfo = new FileInfo(path);
                 FileSetted = true;
-                FileSettedPath = path;
 
                 if (fileInfo.Attributes.HasFlag(FileAttributes.Directory))
                 { SelectedDirectoryChanged?.Invoke(); }
@@ -37,24 +36,19 @@ namespace FileManager.Classes
             catch
             {
                 FileSetted = false;
+
                 excActionFile?.Invoke();
             }
         }
-        public void AddFileToBuffer()
-        {
-            if (FileSetted)
-            {
-                buffer.Add(fileInfo);
-            }
-        }
-        public void AddRangeOfFilesToBuffer(List<string> paths)
+        public void AddFilesToBuffer(List<string> paths)
         {
             foreach (var item in paths)
             {
                 if (!buffer.files.Contains(item))
                 {
                     SetFile(item);
-                    AddFileToBuffer();
+                    if (FileSetted)
+                    { buffer.Add(fileInfo); }
                 }
             }
         }

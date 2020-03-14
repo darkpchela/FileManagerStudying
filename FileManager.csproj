@@ -52,21 +52,24 @@
     <Compile Include="Classes\FileController.cs" />
     <Compile Include="Classes\DirectoryLoader.cs" />
     <Compile Include="Classes\Interfaces\Interface1.cs" />
-    <Compile Include="Classes\PathHistory.cs" />
+    <Compile Include="Classes\History.cs" />
     <Compile Include="Classes\PathController.cs" />
     <Compile Include="Classes\WindowsDrivesInfo.cs" />
-    <Compile Include="Forms\Form1%28a%29.cs">
+    <Compile Include="Forms\Form1\Form1%28c%29.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form1%28a%29.Designer.cs">
+    <Compile Include="Forms\Form1\Form1%28a%29.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Form1\Form1%28a%29.Designer.cs">
       <DependentUpon>Form1%28a%29.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form1%28b%29.cs">
+    <Compile Include="Forms\Form1\Form1%28b%29.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\Form1%28a%29.resx">
+    <EmbeddedResource Include="Forms\Form1\Form1%28a%29.resx">
       <DependentUpon>Form1%28a%29.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

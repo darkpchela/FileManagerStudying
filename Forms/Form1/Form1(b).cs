@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileManager.Classes;
 
-namespace FileManager.Forms
+namespace FileManager.Forms.Form1
 {
      public partial class Form1
      {
         PathController _pathController = new PathController();
         FileController _fileController = new FileController();
         List<string>   SelectedFiles   = new List<string>();
+        string tempPath = "";
 
         private void RefreshBuffer()
         {
@@ -27,27 +28,32 @@ namespace FileManager.Forms
         }
         private void RefreshPathText()
         {
-            comboBox_path.Text = _pathController.tempPath;
+            comboBox_path.Text = _pathController.currentPath;
         }
-        private void ShowDirectory()
+        private void LoadListView()
         {
-            _pathController.SetPath();
+            listView_main.Clear();
+            foreach (var item in _pathController.currentLoadedDirectories)
+            {
+                listView_main.Items.Add(item, 4);
+            }
+            foreach (var item in _pathController.currentLoadedFiles)
+            {
+                listView_main.Items.Add(item, 3);
+            }
+        }
+        private void LoadDirectory()
+        {
+            _pathController.SetPath(tempPath);
             _pathController.LoadDirectory();
             LoadListView();
             RefreshPathText();
-
-            void LoadListView()
-            {
-                listView_main.Clear();
-                foreach (var item in _pathController.currentLoadedDirectories)
-                {
-                    listView_main.Items.Add(item, 4);
-                }
-                foreach (var item in _pathController.currentLoadedFiles)
-                {
-                    listView_main.Items.Add(item, 3);
-                }
-            }
+        }
+        private void ReloadDirectory()
+        {
+            _pathController.LoadDirectory();
+            LoadListView();
+            RefreshPathText();
         }
         private void ShowFileInfo()
         {

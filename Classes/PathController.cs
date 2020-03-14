@@ -16,25 +16,24 @@ namespace FileManager.Classes
         private string[] _currentLoadedFiles;
         private string[] _currentLoadedDirectories;
         public string currentPath { get; private set; }
-        public string tempPath    { get;         set; }
 
-        public void SetPath()
+        public void SetPath(string path)
         {
-            if (IsAccessiblePath() && direcoryLoader.IsDirectory(tempPath))
-                { currentPath = tempPath.Replace(@"\\", @"\");    }
+            if (IsAccessiblePath(path) && direcoryLoader.IsDirectory(path))
+                { currentPath = path.Replace(@"\\", @"\"); }
             else
                 { currentPath = pathHistory.globalHistory.Last(); }
         }
 
         public void SetParentDirectoryPath()
         {
-            try   { tempPath = Directory.GetParent(currentPath).ToString(); }
+            try   { currentPath = Directory.GetParent(currentPath).ToString(); }
             catch { excActionPath?.Invoke(); }
         }
-        public bool IsAccessiblePath()
+        public bool IsAccessiblePath(string path)
         {
-            try   { Directory.GetFiles(tempPath);   return true;  }
-            catch { excActionPath?.Invoke();        return false; }
+            try   { Directory.GetFiles(path); return true;  }
+            catch { excActionPath?.Invoke();  return false; }
         }
         
         public void LoadDirectory()

@@ -9,12 +9,30 @@ namespace FileManager.Classes
 {
     class Manager
     {
-        //FileBuffer buffer;
+        public  event Action  excActionManager;
 
-        //public FileAndDirectoryRedactor(FileBuffer _buffer)
-        //{
-        //    buffer = _buffer;
-        //}
+        private DirectoryInfo dirInfo;
+        private FileInfo      fileInfo;
+
+        public void CreateDirectory(string parentDirectoryPath, string name)
+        {
+            dirInfo = new DirectoryInfo(parentDirectoryPath);
+            if (!dirInfo.Exists)
+            {
+                dirInfo.Create();
+            }
+            dirInfo.CreateSubdirectory(name);
+        }
+
+        public void CreateFile(string parentDirectoryPath, string name)
+        {
+            string fullName = String.Concat(parentDirectoryPath, name);
+            fileInfo        = new FileInfo(fullName);
+
+            if (!File.Exists(fullName))
+            { fileInfo.Create(); }
+        }
+
         public void Copy(string path)
         {
 
@@ -23,12 +41,52 @@ namespace FileManager.Classes
 
         public void Delete(string path)
         {
-
+            fileInfo = new FileInfo(path);
+            try
+            {
+                if (IsDirectory(path))
+                {
+                    DirectoryInfo dirInfo = new DirectoryInfo(path);
+                    dirInfo.Delete(true);
+                }
+                else
+                  { fileInfo.Delete(); }
+            }
+            catch 
+            {
+                excActionManager?.Invoke();
+            }
         }
 
-        public void Move(string path)
+        public void Move(string path, string newPath)
         {
+            fileInfo = new FileInfo(path);
 
+            if (fileInfo.Exists)
+            {
+                if (IsDirectory(path))
+                {
+                    if (!Directory.Exists(newPath))
+                    {
+                        dirInfo = new DirectoryInfo(path);
+                        dirInfo.MoveTo(newPath);
+                    }
+                }
+                else
+                    if (!File.Exists(newPath))
+                    {
+                        fileInfo.MoveTo(newPath);
+                    }
+
+            }
+        }
+
+        private bool IsDirectory(string path)
+        {
+            if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+            { return true; }
+            else
+            { return false;}
         }
     }
 }

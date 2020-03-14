@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace FileManager.Classes
@@ -10,8 +6,6 @@ namespace FileManager.Classes
     class FileBuffer
     {
         public List<string> files { get; private set; } = new List<string>();
-
-        private FileInfo temp;
 
         public void Add(string path)
         {

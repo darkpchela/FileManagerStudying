@@ -1,4 +1,4 @@
-﻿namespace FileManager.Forms
+﻿namespace FileManager.Forms.Form1
 {
     partial class Form1
     {
@@ -31,6 +31,18 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.listView_main = new System.Windows.Forms.ListView();
+            this.contextMenuStrip_buffer_manager = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem_add = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.ToolStripMenuItem_copy = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem_cut = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem_paste = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.ToolStripMenuItem_rename = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.ToolStripMenuItem_createFolder = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_createFile = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList_Icons = new System.Windows.Forms.ImageList(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.label_fileName = new System.Windows.Forms.Label();
@@ -43,8 +55,7 @@
             this.btn_up = new System.Windows.Forms.Button();
             this.btn_next = new System.Windows.Forms.Button();
             this.checkedListBox_buffer = new System.Windows.Forms.CheckedListBox();
-            this.contextMenuStrip_buffer_manager = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuItem_add = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip_buffer_manager.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,6 +72,92 @@
             this.listView_main.UseCompatibleStateImageBehavior = false;
             this.listView_main.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listView_main_ItemSelectionChanged);
             this.listView_main.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView_main_MouseDoubleClick);
+            // 
+            // contextMenuStrip_buffer_manager
+            // 
+            this.contextMenuStrip_buffer_manager.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem_add,
+            this.toolStripSeparator1,
+            this.ToolStripMenuItem_copy,
+            this.toolStripMenuItem_cut,
+            this.ToolStripMenuItem_delete,
+            this.toolStripSeparator2,
+            this.toolStripMenuItem_paste,
+            this.toolStripSeparator3,
+            this.ToolStripMenuItem_rename,
+            this.toolStripSeparator4,
+            this.ToolStripMenuItem_createFolder,
+            this.ToolStripMenuItem_createFile});
+            this.contextMenuStrip_buffer_manager.Name = "contextMenuStrip_buffer_manager";
+            this.contextMenuStrip_buffer_manager.Size = new System.Drawing.Size(181, 226);
+            // 
+            // toolStripMenuItem_add
+            // 
+            this.toolStripMenuItem_add.Name = "toolStripMenuItem_add";
+            this.toolStripMenuItem_add.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem_add.Text = "Add file to buffer";
+            this.toolStripMenuItem_add.Click += new System.EventHandler(this.toolStripMenuItem_add_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // ToolStripMenuItem_copy
+            // 
+            this.ToolStripMenuItem_copy.Name = "ToolStripMenuItem_copy";
+            this.ToolStripMenuItem_copy.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_copy.Text = "Copy";
+            this.ToolStripMenuItem_copy.Click += new System.EventHandler(this.ToolStripMenuItem_copy_Click);
+            // 
+            // toolStripMenuItem_cut
+            // 
+            this.toolStripMenuItem_cut.Name = "toolStripMenuItem_cut";
+            this.toolStripMenuItem_cut.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem_cut.Text = "Cut";
+            this.toolStripMenuItem_cut.Click += new System.EventHandler(this.toolStripMenuItem_cut_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // toolStripMenuItem_paste
+            // 
+            this.toolStripMenuItem_paste.Name = "toolStripMenuItem_paste";
+            this.toolStripMenuItem_paste.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem_paste.Text = "Paste";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // ToolStripMenuItem_rename
+            // 
+            this.ToolStripMenuItem_rename.Name = "ToolStripMenuItem_rename";
+            this.ToolStripMenuItem_rename.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_rename.Text = "Rename";
+            this.ToolStripMenuItem_rename.Click += new System.EventHandler(this.ToolStripMenuItem_rename_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // ToolStripMenuItem_createFolder
+            // 
+            this.ToolStripMenuItem_createFolder.Name = "ToolStripMenuItem_createFolder";
+            this.ToolStripMenuItem_createFolder.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_createFolder.Text = "Create Folder";
+            this.ToolStripMenuItem_createFolder.Click += new System.EventHandler(this.ToolStripMenuItem_createFolder_Click);
+            // 
+            // ToolStripMenuItem_createFile
+            // 
+            this.ToolStripMenuItem_createFile.Name = "ToolStripMenuItem_createFile";
+            this.ToolStripMenuItem_createFile.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_createFile.Text = "Create File";
+            this.ToolStripMenuItem_createFile.Click += new System.EventHandler(this.ToolStripMenuItem_createFile_Click);
             // 
             // imageList_Icons
             // 
@@ -215,19 +312,12 @@
             this.checkedListBox_buffer.Size = new System.Drawing.Size(459, 94);
             this.checkedListBox_buffer.TabIndex = 12;
             // 
-            // contextMenuStrip_buffer_manager
+            // ToolStripMenuItem_delete
             // 
-            this.contextMenuStrip_buffer_manager.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem_add});
-            this.contextMenuStrip_buffer_manager.Name = "contextMenuStrip_buffer_manager";
-            this.contextMenuStrip_buffer_manager.Size = new System.Drawing.Size(181, 48);
-            // 
-            // toolStripMenuItem_add
-            // 
-            this.toolStripMenuItem_add.Name = "toolStripMenuItem_add";
-            this.toolStripMenuItem_add.Size = new System.Drawing.Size(180, 22);
-            this.toolStripMenuItem_add.Text = "Add file to buffer";
-            this.toolStripMenuItem_add.Click += new System.EventHandler(this.toolStripMenuItem_add_Click);
+            this.ToolStripMenuItem_delete.Name = "ToolStripMenuItem_delete";
+            this.ToolStripMenuItem_delete.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_delete.Text = "Delete";
+            this.ToolStripMenuItem_delete.Click += new System.EventHandler(this.ToolStripMenuItem_delete_Click);
             // 
             // Form1
             // 
@@ -272,6 +362,17 @@
         private System.Windows.Forms.CheckedListBox checkedListBox_buffer;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip_buffer_manager;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_add;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_copy;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_cut;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_paste;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_rename;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_createFolder;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_createFile;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_delete;
     }
 }
 
