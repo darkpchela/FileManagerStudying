@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using FileManager.Classes;
 
 namespace FileManager.Forms.Form1
 {
      public partial class Form1
      {
-        PathController _pathController = new PathController();
-        FileController _fileController = new FileController();
-        List<string>   SelectedFiles   = new List<string>();
+        PathController _pathController    = new PathController();
+        FileController _fileController    = new FileController();
+        List<string>   SelectedFiles      = new List<string>();
+        List<string>   BufferSelectedFile = new List<string>();
+
         string tempPath = "";
 
         private void RefreshBuffer()
@@ -58,9 +53,9 @@ namespace FileManager.Forms.Form1
         private void ShowFileInfo()
         {
             label_fileName.Text = "";
-            if (_fileController.FileSetted)
+            if (_fileController.FileSelected)
             {
-                label_fileName.Text += _fileController.fileInfo.FullName + " ";
+                textBox_fileName.Text = _fileController.fileInfo.Name;
                 label_fileName.Text += (((double)_fileController.fileInfo.Length) / 1024 / 1024).ToString("#.##") + "Mb" + " ";
                 label_fileName.Text += _fileController.fileInfo.Attributes.ToString() + " ";
 
@@ -70,9 +65,9 @@ namespace FileManager.Forms.Form1
         private void ShowDirectoryInfo()
         {
             label_fileName.Text = "";
-            if (_fileController.FileSetted)
+            if (_fileController.FileSelected)
             {
-                label_fileName.Text += _fileController.fileInfo.FullName + " ";
+                textBox_fileName.Text = _fileController.fileInfo.Name;
 
                 label_fileType.Text = "Directory";
             }

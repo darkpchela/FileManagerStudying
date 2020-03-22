@@ -9,22 +9,32 @@ namespace FileManager.Classes
 {
     class Manager
     {
-        public  event Action  excActionManager;
+        public  event    Action    excActionManager;
+        public           Action    Operation; 
 
-        private DirectoryInfo dirInfo;
-        private FileInfo      fileInfo;
+        private DirectoryInfo   dirInfo;
+        private FileInfo        fileInfo;
+
+        private DirectoryLoader directoryLoader = new DirectoryLoader();
 
         public void CreateDirectory(string parentDirectoryPath, string name)
         {
-            dirInfo = new DirectoryInfo(parentDirectoryPath);
-            if (!dirInfo.Exists)
+            try
             {
-                dirInfo.Create();
+                dirInfo = new DirectoryInfo(parentDirectoryPath);
+                if (!dirInfo.Exists)
+                {
+                    dirInfo.Create();
+                }
+                dirInfo.CreateSubdirectory(name);
             }
-            dirInfo.CreateSubdirectory(name);
+            catch
+            {
+                excActionManager?.Invoke();
+            }
         }
 
-        public void CreateFile(string parentDirectoryPath, string name)
+        public void CreateFile(string parentDirectoryPath, string name) //probably better not to use
         {
             string fullName = String.Concat(parentDirectoryPath, name);
             fileInfo        = new FileInfo(fullName);
@@ -33,60 +43,90 @@ namespace FileManager.Classes
             { fileInfo.Create(); }
         }
 
-        public void Copy(string path)
+        public void Copy(string file, string path)
         {
+            string newPath;
+            fileInfo = new FileInfo(file);
+            newPath  = Path.Combine(path, fileInfo.Name);
 
+            if (fileInfo.Exists)
+            {
+                fileInfo.CopyTo(newPath, true);
+            }
         }
 
 
-        public void Delete(string path)
+        public void Delete(string path)//OK
         {
-            fileInfo = new FileInfo(path);
             try
             {
-                if (IsDirectory(path))
+                fileInfo = new FileInfo(path);
+
+                if (directoryLoader.IsDirectory(path))
                 {
                     DirectoryInfo dirInfo = new DirectoryInfo(path);
                     dirInfo.Delete(true);
                 }
                 else
-                  { fileInfo.Delete(); }
+                {   fileInfo.Delete(); }
             }
-            catch 
+            catch
             {
                 excActionManager?.Invoke();
             }
         }
 
-        public void Move(string path, string newPath)
+        public void Move(string file, string newPath)
         {
-            fileInfo = new FileInfo(path);
-
-            if (fileInfo.Exists)
+            try
             {
-                if (IsDirectory(path))
-                {
-                    if (!Directory.Exists(newPath))
-                    {
-                        dirInfo = new DirectoryInfo(path);
-                        dirInfo.MoveTo(newPath);
-                    }
-                }
-                else
-                    if (!File.Exists(newPath))
-                    {
-                        fileInfo.MoveTo(newPath);
-                    }
+                fileInfo = new FileInfo(file);
 
+                if (fileInfo.Exists)  
+                {
+                    if (directoryLoader.IsDirectory(file))
+                    {
+                        if (!Directory.Exists(newPath))
+                        {
+                            dirInfo = new DirectoryInfo(file);
+                            dirInfo.MoveTo(newPath);
+                        }
+                    }
+                    else
+                        if (!File.Exists(newPath))
+                        {
+                            fileInfo.MoveTo(newPath);
+                        }
+
+                }
+            }
+            catch
+            {
+                excActionManager?.Invoke();
             }
         }
 
-        private bool IsDirectory(string path)
+        public void Rename(string oldName, string newName)
         {
-            if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
-            { return true; }
-            else
-            { return false;}
-        }
+            try
+            {
+                if (directoryLoader.IsDirectory(oldName))
+                {
+                    Directory.Move(oldName, oldName + "_temp");
+                    Directory.Move(oldName + "_temp", newName);
+                }
+                else
+                {
+                    File.Move(oldName, oldName + "_temp");
+                    File.Move(oldName + "_temp", newName);
+                }
+            }
+            catch
+            {
+                Directory.Move(oldName + "_temp", oldName);
+                excActionManager?.Invoke();
+            }
+        }//OK
+
     }
 }

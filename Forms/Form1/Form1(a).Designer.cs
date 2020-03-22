@@ -36,9 +36,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ToolStripMenuItem_copy = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_cut = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem_paste = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.ToolStripMenuItem_rename = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.ToolStripMenuItem_createFolder = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,14 +54,17 @@
             this.btn_up = new System.Windows.Forms.Button();
             this.btn_next = new System.Windows.Forms.Button();
             this.checkedListBox_buffer = new System.Windows.Forms.CheckedListBox();
-            this.ToolStripMenuItem_delete = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBox_fileName = new System.Windows.Forms.TextBox();
+            this.debugButtonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip_buffer_manager.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView_main
             // 
             this.listView_main.ContextMenuStrip = this.contextMenuStrip_buffer_manager;
+            this.listView_main.FullRowSelect = true;
             this.listView_main.HideSelection = false;
+            this.listView_main.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.listView_main.LargeImageList = this.imageList_Icons;
             this.listView_main.Location = new System.Drawing.Point(12, 39);
             this.listView_main.Name = "listView_main";
@@ -82,14 +84,13 @@
             this.toolStripMenuItem_cut,
             this.ToolStripMenuItem_delete,
             this.toolStripSeparator2,
-            this.toolStripMenuItem_paste,
-            this.toolStripSeparator3,
             this.ToolStripMenuItem_rename,
             this.toolStripSeparator4,
             this.ToolStripMenuItem_createFolder,
-            this.ToolStripMenuItem_createFile});
+            this.ToolStripMenuItem_createFile,
+            this.debugButtonToolStripMenuItem});
             this.contextMenuStrip_buffer_manager.Name = "contextMenuStrip_buffer_manager";
-            this.contextMenuStrip_buffer_manager.Size = new System.Drawing.Size(181, 226);
+            this.contextMenuStrip_buffer_manager.Size = new System.Drawing.Size(181, 220);
             // 
             // toolStripMenuItem_add
             // 
@@ -107,31 +108,27 @@
             // 
             this.ToolStripMenuItem_copy.Name = "ToolStripMenuItem_copy";
             this.ToolStripMenuItem_copy.Size = new System.Drawing.Size(180, 22);
-            this.ToolStripMenuItem_copy.Text = "Copy";
+            this.ToolStripMenuItem_copy.Text = "Copy from buffer";
             this.ToolStripMenuItem_copy.Click += new System.EventHandler(this.ToolStripMenuItem_copy_Click);
             // 
             // toolStripMenuItem_cut
             // 
             this.toolStripMenuItem_cut.Name = "toolStripMenuItem_cut";
             this.toolStripMenuItem_cut.Size = new System.Drawing.Size(180, 22);
-            this.toolStripMenuItem_cut.Text = "Cut";
+            this.toolStripMenuItem_cut.Text = "Cut from buffer";
             this.toolStripMenuItem_cut.Click += new System.EventHandler(this.toolStripMenuItem_cut_Click);
+            // 
+            // ToolStripMenuItem_delete
+            // 
+            this.ToolStripMenuItem_delete.Name = "ToolStripMenuItem_delete";
+            this.ToolStripMenuItem_delete.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_delete.Text = "Delete";
+            this.ToolStripMenuItem_delete.Click += new System.EventHandler(this.ToolStripMenuItem_delete_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
-            // 
-            // toolStripMenuItem_paste
-            // 
-            this.toolStripMenuItem_paste.Name = "toolStripMenuItem_paste";
-            this.toolStripMenuItem_paste.Size = new System.Drawing.Size(180, 22);
-            this.toolStripMenuItem_paste.Text = "Paste";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // ToolStripMenuItem_rename
             // 
@@ -154,6 +151,7 @@
             // 
             // ToolStripMenuItem_createFile
             // 
+            this.ToolStripMenuItem_createFile.Enabled = false;
             this.ToolStripMenuItem_createFile.Name = "ToolStripMenuItem_createFile";
             this.ToolStripMenuItem_createFile.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItem_createFile.Text = "Create File";
@@ -211,7 +209,7 @@
             // 
             this.label_fileName.AutoSize = true;
             this.label_fileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label_fileName.Location = new System.Drawing.Point(155, 551);
+            this.label_fileName.Location = new System.Drawing.Point(275, 589);
             this.label_fileName.Name = "label_fileName";
             this.label_fileName.Size = new System.Drawing.Size(40, 24);
             this.label_fileName.TabIndex = 4;
@@ -312,18 +310,29 @@
             this.checkedListBox_buffer.Size = new System.Drawing.Size(459, 94);
             this.checkedListBox_buffer.TabIndex = 12;
             // 
-            // ToolStripMenuItem_delete
+            // textBox_fileName
             // 
-            this.ToolStripMenuItem_delete.Name = "ToolStripMenuItem_delete";
-            this.ToolStripMenuItem_delete.Size = new System.Drawing.Size(180, 22);
-            this.ToolStripMenuItem_delete.Text = "Delete";
-            this.ToolStripMenuItem_delete.Click += new System.EventHandler(this.ToolStripMenuItem_delete_Click);
+            this.textBox_fileName.Enabled = false;
+            this.textBox_fileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox_fileName.Location = new System.Drawing.Point(130, 552);
+            this.textBox_fileName.Name = "textBox_fileName";
+            this.textBox_fileName.Size = new System.Drawing.Size(342, 23);
+            this.textBox_fileName.TabIndex = 13;
+            this.textBox_fileName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_fileName_KeyDown);
+            // 
+            // debugButtonToolStripMenuItem
+            // 
+            this.debugButtonToolStripMenuItem.Name = "debugButtonToolStripMenuItem";
+            this.debugButtonToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.debugButtonToolStripMenuItem.Text = "Debug Button";
+            this.debugButtonToolStripMenuItem.Click += new System.EventHandler(this.debugButtonToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1124, 635);
+            this.Controls.Add(this.textBox_fileName);
             this.Controls.Add(this.checkedListBox_buffer);
             this.Controls.Add(this.btn_next);
             this.Controls.Add(this.comboBox_path);
@@ -366,13 +375,13 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_copy;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_cut;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_paste;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_rename;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_createFolder;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_createFile;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_delete;
+        private System.Windows.Forms.TextBox textBox_fileName;
+        private System.Windows.Forms.ToolStripMenuItem debugButtonToolStripMenuItem;
     }
 }
 

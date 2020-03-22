@@ -19,14 +19,14 @@ namespace FileManager.Classes
         public DirectoryInfo directoryInfo { get; private set; }
         public FileBuffer    buffer        { get; private set; } = new FileBuffer();
 
-        public bool          FileSetted    { get; private set; }
+        public bool          FileSelected    { get; private set; }
 
-        public void SetFile(string path)//Maybe rebuild
+        public void SelectFile(string path)//Maybe rebuild
         {
             try
             {
-                fileInfo = new FileInfo(path);
-                FileSetted = true;
+                fileInfo   = new FileInfo(path);
+                FileSelected = true;
 
                 if (fileInfo.Attributes.HasFlag(FileAttributes.Directory))
                 { SelectedDirectoryChanged?.Invoke(); }
@@ -35,7 +35,7 @@ namespace FileManager.Classes
             }
             catch
             {
-                FileSetted = false;
+                FileSelected = false;
 
                 excActionFile?.Invoke();
             }
@@ -46,8 +46,8 @@ namespace FileManager.Classes
             {
                 if (!buffer.files.Contains(item))
                 {
-                    SetFile(item);
-                    if (FileSetted)
+                    SelectFile(item);
+                    if (FileSelected)
                     { buffer.Add(fileInfo); }
                 }
             }

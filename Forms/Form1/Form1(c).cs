@@ -23,21 +23,27 @@ namespace FileManager.Forms.Form1
         }
         private void ToolStripMenuItem_copy_Click(object sender, EventArgs e)
         {
-            _fileController.AddFilesToBuffer(SelectedFiles);
-            SelectedFiles.Clear();
+            foreach (var file in checkedListBox_buffer.CheckedItems)
+            {
+                _fileController.manager.Copy(file.ToString(), _pathController.currentPath);
+            }
+            ReloadDirectory();
             RefreshBuffer();
         }
 
         private void toolStripMenuItem_cut_Click(object sender, EventArgs e)
         {
-            _fileController.AddFilesToBuffer(SelectedFiles);
-            SelectedFiles.Clear();
+            foreach (var file in checkedListBox_buffer.CheckedItems)
+            {
+                _fileController.manager.Move(file.ToString(), _pathController.currentPath);
+            }
+            ReloadDirectory();
             RefreshBuffer();
         }
 
         private void ToolStripMenuItem_rename_Click(object sender, EventArgs e)
         {
-
+            textBox_fileName.Enabled = true;
         }
 
         private void ToolStripMenuItem_createFolder_Click(object sender, EventArgs e)
