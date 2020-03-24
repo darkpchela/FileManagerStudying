@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using FileManager.Classes;
+using FileManager.Classes.Etc;
 
 namespace FileManager.Forms.Form1
 {
@@ -75,7 +76,7 @@ namespace FileManager.Forms.Form1
         }
 
 
-        private OverwriteOptions OverwriteDialog()
+        private DialogOptions OverwriteDialog()
         {
             messageBoxButtons = MessageBoxButtons.YesNoCancel;
             caption = "Copying";
@@ -86,17 +87,21 @@ namespace FileManager.Forms.Form1
             switch (dialogResult)
             {
                 case DialogResult.Yes:
-                    return OverwriteOptions.Yes;
+                    return DialogOptions.Yes;
 
                 case DialogResult.No:
-                    return OverwriteOptions.No;
+                    return DialogOptions.No;
 
                 case DialogResult.Cancel:
-                    return OverwriteOptions.Cancel;
+                    return DialogOptions.Cancel;
 
                 default:
-                    return OverwriteOptions.Cancel;
+                    return DialogOptions.Cancel;
             }
+        }
+        private void ShowExceptionMessage(string message)
+        {
+            MessageBox.Show(message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

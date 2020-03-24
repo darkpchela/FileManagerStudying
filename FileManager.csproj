@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Class1.cs" />
+    <Compile Include="Classes\Etc\Other tools.cs" />
     <Compile Include="Classes\Manager.cs" />
     <Compile Include="Classes\FileBuffer.cs" />
     <Compile Include="Classes\FileController.cs" />

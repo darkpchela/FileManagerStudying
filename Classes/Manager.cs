@@ -4,17 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using FileManager.Classes.Etc;
 
 namespace FileManager.Classes
 {
-    delegate OverwriteOptions OverwriteOptionsHandler();
-    enum OverwriteOptions { Yes, No, YesToAll, NoToAll, Cancel }
     class Manager
     {
-        public  event    Action    excActionManager;
-        public           Action    Operation;
+        public  MessageHandler          exActionManager;
+        public  OverwriteOptionsHandler overwriteOptions;
 
-        public OverwriteOptionsHandler overwriteOptions;
 
         private DirectoryInfo   dirInfo;
         private FileInfo        fileInfo;
@@ -32,13 +30,13 @@ namespace FileManager.Classes
                 }
                 dirInfo.CreateSubdirectory(name);
             }
-            catch
+            catch(Exception ex)
             {
-                excActionManager?.Invoke();
+                exActionManager?.Invoke(ex.Message);
             }
         }
 
-        public void CreateFile(string parentDirectoryPath, string name) //probably better not to use
+        public void CreateFile(string parentDirectoryPath, string name) //probably better not to use yet
         {
             string fullName = String.Concat(parentDirectoryPath, name);
             fileInfo        = new FileInfo(fullName);
@@ -51,13 +49,13 @@ namespace FileManager.Classes
         {
             string newPath          = "";
             bool   optionSetted     = false;
-            OverwriteOptions option = OverwriteOptions.Cancel;
+            DialogOptions option    = DialogOptions.Cancel;
 
             try
             {
                 if (directoryLoader.IsDirectory(name))
                 {
-                    List<FileInfo> files = new List<FileInfo>();
+                    List<FileInfo> files            = new List<FileInfo>();
                     List<DirectoryInfo> directories = new List<DirectoryInfo>();
 
                     string deltaPath = Directory.GetParent(name).FullName;
@@ -92,20 +90,20 @@ namespace FileManager.Classes
                         {
                             if (!optionSetted)
                             {
-                                option = overwriteOptions?.Invoke() ?? OverwriteOptions.No;
+                                option = overwriteOptions?.Invoke() ?? DialogOptions.No;
                                 optionSetted = true;
                             }
 
                             switch (option)
                             {
-                                case OverwriteOptions.No:
+                                case DialogOptions.No:
                                     continue;
 
-                                case OverwriteOptions.Yes:
+                                case DialogOptions.Yes:
                                     file.CopyTo(newPath, true);
                                     break;
 
-                                case OverwriteOptions.Cancel:
+                                case DialogOptions.Cancel:
                                     break;
 
                                 default:
@@ -125,14 +123,14 @@ namespace FileManager.Classes
                         { fileInfo.CopyTo(newPath, false); }
                         else
                         {
-                            option = overwriteOptions?.Invoke() ?? OverwriteOptions.Cancel;
+                            option = overwriteOptions?.Invoke() ?? DialogOptions.Cancel;
 
                             switch (option)
                             {
-                                case OverwriteOptions.No:
+                                case DialogOptions.No:
                                     break;
 
-                                case OverwriteOptions.Yes:
+                                case DialogOptions.Yes:
                                     fileInfo.CopyTo(newPath, true);
                                     break;
 
@@ -143,8 +141,8 @@ namespace FileManager.Classes
                     }
                 }
             }
-            catch
-            { excActionManager?.Invoke(); }
+            catch(Exception ex)
+            { exActionManager?.Invoke(ex.Message); }
             
         }//Probably ready
 
@@ -164,37 +162,62 @@ namespace FileManager.Classes
             }
             catch(Exception ex)
             {
-                excActionManager?.Invoke();
+                exActionManager?.Invoke(ex.Message);
             }
         }
 
         public void Move(string file, string newPath)
         {
+            DialogOptions option;
+
             try
             {
                 fileInfo = new FileInfo(file);
+                newPath = Path.Combine(newPath, fileInfo.Name);
 
-                if (fileInfo.Exists)  
+                if (directoryLoader.IsDirectory(file))
                 {
-                    if (directoryLoader.IsDirectory(file))
+                    if (!Directory.Exists(newPath))
                     {
-                        if (!Directory.Exists(newPath))
+                        dirInfo = new DirectoryInfo(file);
+                        dirInfo.MoveTo(newPath);
+                    }
+                }
+                else
+                {
+                    if (fileInfo.Exists)
+                    {
+                        if (File.Exists(newPath))
                         {
-                            dirInfo = new DirectoryInfo(file);
-                            dirInfo.MoveTo(newPath);
+                            option = overwriteOptions?.Invoke() ?? DialogOptions.No;
+
+                            switch(option)
+                            {
+                                case DialogOptions.Yes:
+                                    fileInfo.MoveTo(newPath);
+                                    break;
+                                case DialogOptions.No:
+                                    break;
+
+                                case DialogOptions.Cancel:
+                                    goto case DialogOptions.No;
+
+                                default:
+                                    break;
+                            }
+
                         }
+                        else
+                        { fileInfo.MoveTo(newPath); }
                     }
                     else
-                        if (!File.Exists(newPath))
-                        {
-                            fileInfo.MoveTo(newPath);
-                        }
-
+                    { throw new NullReferenceException("Trying to move not existed file or directory."); }
                 }
+
             }
-            catch
+            catch (Exception ex)
             {
-                excActionManager?.Invoke();
+                exActionManager?.Invoke(ex.Message);
             }
         }
 
@@ -213,10 +236,10 @@ namespace FileManager.Classes
                     File.Move(oldName + "_temp", newName);
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 Directory.Move(oldName + "_temp", oldName);
-                excActionManager?.Invoke();
+                exActionManager?.Invoke(ex.Message);
             }
         }//OK
 

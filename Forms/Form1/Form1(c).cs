@@ -15,7 +15,7 @@ namespace FileManager.Forms.Form1
         string            message;
         string            caption;
 
-        private void toolStripMenuItem_add_Click(object sender, EventArgs e)
+        private void toolStripMenuItem_add_Click(object sender, EventArgs e)//OK
         {
             fileController.AddFilesToBuffer(SelectedFiles);
             SelectedFiles.Clear();
@@ -29,34 +29,36 @@ namespace FileManager.Forms.Form1
             }
             ReloadDirectory();
             RefreshBuffer();
-        }
+        }//OK
 
         private void toolStripMenuItem_cut_Click(object sender, EventArgs e)
         {
-            foreach (var file in checkedListBox_buffer.CheckedItems)
+            string[] checkedFiles = new string[checkedListBox_buffer.CheckedItems.Count];
+            checkedListBox_buffer.CheckedItems.CopyTo(checkedFiles,0);
+            foreach (var file in checkedFiles)
             {
-                fileController.manager.Move(file.ToString(), pathController.currentPath);
+                fileController.manager.Move(file, pathController.currentPath);
             }
             ReloadDirectory();
             RefreshBuffer();
         }
 
-        private void ToolStripMenuItem_rename_Click(object sender, EventArgs e)
+        private void ToolStripMenuItem_rename_Click(object sender, EventArgs e)//OK
         {
             textBox_fileName.Enabled = true;
         }
 
         private void ToolStripMenuItem_createFolder_Click(object sender, EventArgs e)
         {
-            string name = "Unknown folder";
+            string name = "New folder";
             fileController.manager.CreateDirectory(pathController.currentPath, name);
             ReloadDirectory();
-        }
+        }//OK
 
         private void ToolStripMenuItem_createFile_Click(object sender, EventArgs e)
         {
 
-        }
+        }//Empty
 
         private void ToolStripMenuItem_delete_Click(object sender, EventArgs e)
         {
@@ -81,6 +83,6 @@ namespace FileManager.Forms.Form1
             }
 
             ReloadDirectory();
-        }
+        }//OK
     }
 }

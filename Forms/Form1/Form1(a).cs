@@ -20,6 +20,7 @@ namespace FileManager.Forms.Form1
         private void Form1_Load(object sender, EventArgs e)
         {
             pathController.excActionPath += () => MessageBox.Show("Not accessible path!");
+            fileController.manager.exActionManager += ShowExceptionMessage;
             fileController.SelectedDirectoryChanged += ShowDirectoryInfo;
             fileController.SelectedFileChanged += ShowFileInfo;
             fileController.manager.overwriteOptions += OverwriteDialog;

@@ -40,7 +40,7 @@ namespace FileManager.Classes
                 excActionFile?.Invoke();
             }
         }
-        public void AddFilesToBuffer(List<string> paths)
+        public void AddFilesToBuffer(List<string> paths)//OK
         {
             foreach (var item in paths)
             {
