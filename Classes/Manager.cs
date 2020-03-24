@@ -13,6 +13,13 @@ namespace FileManager.Classes
         public  MessageHandler          exActionManager;
         public  OverwriteOptionsHandler overwriteOptions;
 
+        public event EventHandler OperationCompleted;
+
+        //protected virtual void OnOperationCompleted(EventArgs e)
+        //{
+        //    EventHandler handler = OperationCompleted;
+        //    handler?.Invoke(this, e);
+        //}
 
         private DirectoryInfo   dirInfo;
         private FileInfo        fileInfo;
@@ -45,6 +52,12 @@ namespace FileManager.Classes
             { fileInfo.Create(); }
         }
 
+        public async void CopyAsync(string name, string path)
+        {
+            await Task.Run(()=>Copy(name, path));
+            //EventArgs e = new EventArgs();
+            //OnOperationCompleted(e);
+        }
         public void Copy(string name, string path)
         {
             string newPath          = "";
@@ -78,7 +91,7 @@ namespace FileManager.Classes
                             dirInfo.Create();
                         }
                     }
-
+                    
 
                     foreach (var file in files)
                     {
@@ -111,6 +124,7 @@ namespace FileManager.Classes
                             }
                         }
                     }
+
                 }
                 else
                 {
