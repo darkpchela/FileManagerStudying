@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FileManager.Classes;
 
 namespace FileManager.Forms.Form1
 {
@@ -13,11 +14,10 @@ namespace FileManager.Forms.Form1
         DialogResult      dialogResult;
         string            message;
         string            caption;
-    
 
         private void toolStripMenuItem_add_Click(object sender, EventArgs e)
         {
-            _fileController.AddFilesToBuffer(SelectedFiles);
+            fileController.AddFilesToBuffer(SelectedFiles);
             SelectedFiles.Clear();
             RefreshBuffer();
         }
@@ -25,7 +25,7 @@ namespace FileManager.Forms.Form1
         {
             foreach (var file in checkedListBox_buffer.CheckedItems)
             {
-                _fileController.manager.Copy(file.ToString(), _pathController.currentPath);
+                fileController.manager.Copy(file.ToString(), pathController.currentPath);
             }
             ReloadDirectory();
             RefreshBuffer();
@@ -35,7 +35,7 @@ namespace FileManager.Forms.Form1
         {
             foreach (var file in checkedListBox_buffer.CheckedItems)
             {
-                _fileController.manager.Move(file.ToString(), _pathController.currentPath);
+                fileController.manager.Move(file.ToString(), pathController.currentPath);
             }
             ReloadDirectory();
             RefreshBuffer();
@@ -49,7 +49,7 @@ namespace FileManager.Forms.Form1
         private void ToolStripMenuItem_createFolder_Click(object sender, EventArgs e)
         {
             string name = "Unknown folder";
-            _fileController.manager.CreateDirectory(_pathController.currentPath, name);
+            fileController.manager.CreateDirectory(pathController.currentPath, name);
             ReloadDirectory();
         }
 
@@ -72,7 +72,7 @@ namespace FileManager.Forms.Form1
                 {
                     foreach (var item in SelectedFiles)
                     {
-                        _fileController.manager.Delete(item);
+                        fileController.manager.Delete(item);
                     }
                 }
                 else

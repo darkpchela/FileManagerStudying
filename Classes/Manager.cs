@@ -7,15 +7,19 @@ using System.IO;
 
 namespace FileManager.Classes
 {
+    delegate OverwriteOptions OverwriteOptionsHandler();
+    enum OverwriteOptions { Yes, No, YesToAll, NoToAll, Cancel }
     class Manager
     {
         public  event    Action    excActionManager;
-        public           Action    Operation; 
+        public           Action    Operation;
+
+        public OverwriteOptionsHandler overwriteOptions;
 
         private DirectoryInfo   dirInfo;
         private FileInfo        fileInfo;
 
-        private DirectoryLoader directoryLoader = new DirectoryLoader();
+        public  DirectoryLoader directoryLoader = new DirectoryLoader();
 
         public void CreateDirectory(string parentDirectoryPath, string name)
         {
@@ -43,18 +47,106 @@ namespace FileManager.Classes
             { fileInfo.Create(); }
         }
 
-        public void Copy(string file, string path)
+        public void Copy(string name, string path)
         {
-            string newPath;
-            fileInfo = new FileInfo(file);
-            newPath  = Path.Combine(path, fileInfo.Name);
+            string newPath          = "";
+            bool   optionSetted     = false;
+            OverwriteOptions option = OverwriteOptions.Cancel;
 
-            if (fileInfo.Exists)
+            try
             {
-                fileInfo.CopyTo(newPath, true);
-            }
-        }
+                if (directoryLoader.IsDirectory(name))
+                {
+                    List<FileInfo> files = new List<FileInfo>();
+                    List<DirectoryInfo> directories = new List<DirectoryInfo>();
 
+                    string deltaPath = Directory.GetParent(name).FullName;
+
+                    directoryLoader.GetAllFilesAndDirectoriesFromDirectory(name, ref files, ref directories);
+
+                    if (deltaPath == path)
+                    {
+                        deltaPath = directories.First().FullName;
+                        path = deltaPath + "-copy";
+                    }
+
+
+                    foreach (var dir in directories)
+                    {
+                        newPath = dir.FullName.Replace(deltaPath, path);
+                        dirInfo = new DirectoryInfo(newPath);
+                        if (!Directory.Exists(newPath))
+                        {
+                            dirInfo.Create();
+                        }
+                    }
+
+
+                    foreach (var file in files)
+                    {
+                        newPath = file.FullName.Replace(deltaPath, path);
+
+                        if (!File.Exists(newPath))
+                        { file.CopyTo(newPath); }
+                        else
+                        {
+                            if (!optionSetted)
+                            {
+                                option = overwriteOptions?.Invoke() ?? OverwriteOptions.No;
+                                optionSetted = true;
+                            }
+
+                            switch (option)
+                            {
+                                case OverwriteOptions.No:
+                                    continue;
+
+                                case OverwriteOptions.Yes:
+                                    file.CopyTo(newPath, true);
+                                    break;
+
+                                case OverwriteOptions.Cancel:
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    fileInfo = new FileInfo(name);
+                    newPath = Path.Combine(path, fileInfo.Name);
+
+                    if (fileInfo.Exists)
+                    {
+                        if (!File.Exists(newPath))
+                        { fileInfo.CopyTo(newPath, false); }
+                        else
+                        {
+                            option = overwriteOptions?.Invoke() ?? OverwriteOptions.Cancel;
+
+                            switch (option)
+                            {
+                                case OverwriteOptions.No:
+                                    break;
+
+                                case OverwriteOptions.Yes:
+                                    fileInfo.CopyTo(newPath, true);
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            { excActionManager?.Invoke(); }
+            
+        }//Probably ready
 
         public void Delete(string path)//OK
         {
@@ -70,7 +162,7 @@ namespace FileManager.Classes
                 else
                 {   fileInfo.Delete(); }
             }
-            catch
+            catch(Exception ex)
             {
                 excActionManager?.Invoke();
             }
