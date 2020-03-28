@@ -25,7 +25,7 @@ namespace FileManager.Forms.Form1
         {
             foreach (var file in checkedListBox_buffer.CheckedItems)
             {
-                fileController.manager.CopyAsync(file.ToString(), pathController.currentPath);
+                fileController.manager.Copy(file.ToString(), pathController.currentPath);
             }
             ReloadDirectory();
             RefreshBuffer();

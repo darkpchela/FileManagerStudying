@@ -10,15 +10,13 @@ namespace FileManager.Classes
 {
     class Manager
     {
-        public  MessageHandler          exActionManager;
-        public  OverwriteOptionsHandler overwriteOptions;
-
-        public event EventHandler OperationCompleted;
+        public  MessageHandler      exActionManager;
+        public  DialogOptionHandler overwriteOptions;
 
         private DirectoryInfo   dirInfo;
         private FileInfo        fileInfo;
-
-        public  DirectoryLoader directoryLoader = new DirectoryLoader();
+        private DirectoryLoader directoryLoader = new DirectoryLoader();
+        private DialogOptions   option;
 
         public void CreateDirectory(string parentDirectoryPath, string name)
         {
@@ -69,7 +67,7 @@ namespace FileManager.Classes
 
                     if (deltaPath == path)
                     {
-                        deltaPath = directories.First().FullName;
+                        deltaPath = name;
                         path = deltaPath + "-copy";
                     }
 
@@ -174,7 +172,7 @@ namespace FileManager.Classes
 
         public void Move(string file, string newPath)
         {
-            DialogOptions option;
+           
 
             try
             {
