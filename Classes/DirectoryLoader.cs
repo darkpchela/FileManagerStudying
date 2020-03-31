@@ -1,67 +1,59 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System;
 
 namespace FileManager.Classes
 {
     class DirectoryLoader
-    {   
-        public bool IsDirectory(string path)
+    {
+        public DirectoryInfo   currentDirectory { get; private set; }
+        public FileInfo[]      files            { get; private set; }
+        public DirectoryInfo[] directories      { get; private set; }
+        public DirectoryLoader(DirectoryInfo directory)
         {
-           
-            FileAttributes _fileAttributes = File.GetAttributes(path);
-
-            if (_fileAttributes.HasFlag(FileAttributes.Directory))
-                { return true; }
-            else
-                { return false;}
-
+            currentDirectory = directory;
+        }
+        public DirectoryLoader(string path)
+        {
+            currentDirectory = new DirectoryInfo(path);
+        }
+        public void LoadDirectory()
+        {
+            files       = currentDirectory.GetFiles();
+            directories = currentDirectory.GetDirectories();
         }//OK
 
-        public void LoadDirectory(string path, ref string[] files, ref string[] directories)
+        public bool TryLoadDirectory()
         {
-           
-            DirectoryInfo   dirInfo;
-            FileInfo[]      fileInfo;
-            DirectoryInfo[] directoriesInfo;
-
-            if (IsDirectory(path))
+            try
             {
-                dirInfo         = new DirectoryInfo(path);
-                fileInfo        = dirInfo.GetFiles();
-                directoriesInfo = dirInfo.GetDirectories();
-                files           = FileSystemInfoNames(fileInfo);
-                directories     = FileSystemInfoNames(directoriesInfo);
+                this.files       = currentDirectory.GetFiles();
+                this.directories = currentDirectory.GetDirectories();
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
 
-            string[] FileSystemInfoNames<T>(T[] list) where T : FileSystemInfo
-            {
-                List<string> temp = new List<string>();
-                foreach (var item in list)
-                {
-                    temp.Add(item.Name);
-                }
-                temp.Sort();
-                string[] array = temp.ToArray();
-                return array;
-            }
-
-        }//Maybe rebuild later
-        public void GetAllFilesAndDirectoriesFromDirectory(string name, ref List<FileInfo> files, ref List<DirectoryInfo> directories)
+        }//OK
+        public static void GetAllFilesAndDirectoriesFromDirectory(string name, ref List<FileInfo> filesOut, ref List<DirectoryInfo> directoriesOut)
         {
 
             if (Directory.Exists(name))
             {
                 DirectoryInfo dirInfo = new DirectoryInfo(name);
 
-                directories.Add(dirInfo);
-                files.AddRange(dirInfo.GetFiles());
+                directoriesOut.Add(dirInfo);
+                filesOut.AddRange(dirInfo.GetFiles());
 
                 if (dirInfo.GetDirectories().Any())
                 {
                     foreach (var dir in dirInfo.GetDirectories())
                     {
-                        GetAllFilesAndDirectoriesFromDirectory(dir.FullName, ref files, ref directories);
+                        GetAllFilesAndDirectoriesFromDirectory(dir.FullName, ref filesOut, ref directoriesOut);
                     }
                 }
             }

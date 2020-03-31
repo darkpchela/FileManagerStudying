@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileManager.Classes;
+using FileManager.Forms.Form1;
 
 namespace FileManager.Forms.Form1
 {

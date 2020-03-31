@@ -1,26 +1,22 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using FileManager.Classes.Etc;
 
 namespace FileManager.Classes
 {
     class PathController
     {
-        public Action excActionPath;
+        public MessageHandler excActionPath;
 
         public History         pathHistory     = new History();
-        public DirectoryLoader direcoryLoader  = new DirectoryLoader();
-        public  string[] currentLoadedFiles         { get { return _currentLoadedFiles;       } set { } }
-        public  string[] currentLoadedDirectories   { get { return _currentLoadedDirectories; } set { } }
-
-        private string[] _currentLoadedFiles;
-        private string[] _currentLoadedDirectories;
+        public DirectoryLoader directoryLoader;
         public string currentPath { get; private set; }
 
         public void SetPath(string path)
         {
-            if (IsAccessiblePath(path) && direcoryLoader.IsDirectory(path))
-                { currentPath = path.Replace(@"\\", @"\"); }
+            if (PathValidator.IsDirectory(path))
+                { currentPath = path.Replace(@"\\", @"\");        }
             else
                 { currentPath = pathHistory.globalHistory.Last(); }
         }
@@ -28,23 +24,25 @@ namespace FileManager.Classes
         public void SetParentDirectoryPath()
         {
             try   { currentPath = Directory.GetParent(currentPath).ToString(); }
-            catch { excActionPath?.Invoke(); }
-        }
-        public bool IsAccessiblePath(string path)
-        {
-            try   { Directory.GetFiles(path); return true;  }
-            catch { excActionPath?.Invoke();  return false; }
-        }
-        
+            catch (Exception ex)
+            { excActionPath?.Invoke(ex.Message); }
+        }     
         public void LoadDirectory()
         {
-            direcoryLoader.LoadDirectory(currentPath, ref _currentLoadedFiles, ref _currentLoadedDirectories); 
+            directoryLoader      = new DirectoryLoader(currentPath);
+            bool directoryLoaded = directoryLoader.TryLoadDirectory();
 
-            if (!pathHistory.globalHistory.Any())
-                { pathHistory.UpdateHistory(currentPath); }
+            if (directoryLoaded)
+            {
+                if (!pathHistory.globalHistory.Any() || pathHistory.globalHistory.Last() != currentPath)
+                    pathHistory.UpdateHistory(currentPath);
+            }
             else
-                if (pathHistory.globalHistory.Last() != currentPath)
-                    { pathHistory.UpdateHistory(currentPath); }  
+            {
+                currentPath = pathHistory.globalHistory.Last();
+                excActionPath?.Invoke("Not accessible path!");
+            }
         }
+
     }
 }

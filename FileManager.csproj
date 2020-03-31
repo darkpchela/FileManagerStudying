@@ -47,13 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Class1.cs" />
+    <Compile Include="Classes\Copiers\DirectoryCopier.cs" />
+    <Compile Include="Classes\Copiers\FileCopier.cs" />
+    <Compile Include="Classes\PathValidator.cs" />
     <Compile Include="Classes\Etc\Other tools.cs" />
-    <Compile Include="Classes\Manager.cs" />
+    <Compile Include="Classes\FileDistributor.cs" />
     <Compile Include="Classes\FileBuffer.cs" />
-    <Compile Include="Classes\FileController.cs" />
+    <Compile Include="Classes\FileOperator.cs" />
     <Compile Include="Classes\DirectoryLoader.cs" />
-    <Compile Include="Classes\Interfaces\Interface1.cs" />
     <Compile Include="Classes\History.cs" />
     <Compile Include="Classes\PathController.cs" />
     <Compile Include="Classes\WindowsDrivesInfo.cs" />
@@ -96,6 +97,8 @@
   <ItemGroup>
     <None Include="Main\App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Classes\AbsractClasses\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

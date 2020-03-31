@@ -8,10 +8,10 @@ namespace FileManager.Forms.Form1
 {
      public partial class Form1
      {
-        PathController pathController     = new PathController();
-        FileController fileController     = new FileController();
-        List<string>   SelectedFiles      = new List<string>();
-        List<string>   BufferSelectedFile = new List<string>();
+        PathController pathController      = new PathController();
+        FileOperator fileController      = new FileOperator();
+        List<string>   SelectedFiles       = new List<string>();
+        List<string>   CheckedFilesBuffer  = new List<string>();
 
         string tempPath = "";
 
@@ -30,13 +30,13 @@ namespace FileManager.Forms.Form1
         private void LoadListView()
         {
             listView_main.Clear();
-            foreach (var item in pathController.currentLoadedDirectories)
+            foreach (var item in pathController.directoryLoader.directories)
             {
-                listView_main.Items.Add(item, 4);
+                listView_main.Items.Add(item.Name, 4);
             }
-            foreach (var item in pathController.currentLoadedFiles)
+            foreach (var item in pathController.directoryLoader.files)
             {
-                listView_main.Items.Add(item, 3);
+                listView_main.Items.Add(item.Name, 3);
             }
         }
         private void LoadDirectory()
@@ -57,7 +57,6 @@ namespace FileManager.Forms.Form1
             label_fileName.Text = "";
             if (fileController.FileSelected)
             {
-                textBox_fileName.Text = fileController.fileInfo.Name;
                 label_fileName.Text += (((double)fileController.fileInfo.Length) / 1024 / 1024).ToString("#.##") + "Mb" + " ";
                 label_fileName.Text += fileController.fileInfo.Attributes.ToString() + " ";
 
@@ -69,8 +68,6 @@ namespace FileManager.Forms.Form1
             label_fileName.Text = "";
             if (fileController.FileSelected)
             {
-                textBox_fileName.Text = fileController.fileInfo.Name;
-
                 label_fileType.Text = "Directory";
             }
         }

@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace FileManager.Classes
 {
-    class FileController
+    class FileOperator
     {
         public event Action excActionFile;
         public event Action SelectedFileChanged;
         public event Action SelectedDirectoryChanged;
 
-        public Manager manager = new Manager();
+        public FileDistributor fileDistributor  { get; } 
+        public FileBuffer      buffer           { get; private set; }
+        public FileInfo        fileInfo         { get; private set; }
 
-        public FileInfo      fileInfo      { get; private set; }
-        public DirectoryInfo directoryInfo { get; private set; }
-        public FileBuffer    buffer        { get; private set; } = new FileBuffer();
+        public bool          FileSelected  { get; private set; }
 
-        public bool          FileSelected    { get; private set; }
-
+        public FileOperator()
+        {
+            fileDistributor = new FileDistributor(); 
+            buffer          = new FileBuffer();
+        }
         public void SelectFile(string path)//Maybe rebuild
         {
             try
@@ -28,10 +28,10 @@ namespace FileManager.Classes
                 fileInfo   = new FileInfo(path);
                 FileSelected = true;
 
-                if (fileInfo.Attributes.HasFlag(FileAttributes.Directory))
-                { SelectedDirectoryChanged?.Invoke(); }
+                if (PathValidator.IsDirectory(path))
+                    SelectedDirectoryChanged?.Invoke();
                 else
-                { SelectedFileChanged?.Invoke();      }
+                    SelectedFileChanged?.Invoke();
             }
             catch
             {

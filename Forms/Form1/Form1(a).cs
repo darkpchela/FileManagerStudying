@@ -19,11 +19,11 @@ namespace FileManager.Forms.Form1
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            pathController.excActionPath += () => MessageBox.Show("Not accessible path!");
-            fileController.manager.exActionManager += ShowExceptionMessage;
+            pathController.excActionPath            += ShowExceptionMessage;
+            fileController.fileDistributor.exActionManager  += ShowExceptionMessage;
             fileController.SelectedDirectoryChanged += ShowDirectoryInfo;
-            fileController.SelectedFileChanged += ShowFileInfo;
-            fileController.manager.overwriteOptions += OverwriteDialog;
+            fileController.SelectedFileChanged      += ShowFileInfo;
+            fileController.fileDistributor.overwriteOptions += OverwriteDialog;
 
             comboBox_drives.Items.AddRange(WindowsDrivesInfo.drivesNames);
             comboBox_drives.SelectedIndex = 0;
@@ -104,20 +104,17 @@ namespace FileManager.Forms.Form1
 
         private void listView_main_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            string currentSlectedItem = e.Item.Text;
+            string currentSelectedItem = e.Item.Text;
 
-            tempPath = pathController.currentPath + "\\" + currentSlectedItem;
+            tempPath = pathController.currentPath + "\\" + currentSelectedItem;
             tempPath = tempPath.Replace(@"\\", @"\");
 
-            if (!pathController.direcoryLoader.IsDirectory(tempPath))
-            { comboBox_path.Text = pathController.currentPath; }
-            //------------------------------------
-            if (e.IsSelected)
-            { SelectedFiles.Add(tempPath); }
-            else
-            { SelectedFiles.Remove(tempPath); }
-            //-------------------------------------
-            fileController.SelectFile(tempPath);
+            SelectedFiles.Clear();
+
+            foreach (ListViewItem item in listView_main.SelectedItems)
+            {
+                SelectedFiles.Add(pathController.currentPath +"\\"+ item.Text);
+            }
         }
 
         private void listView_main_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -126,17 +123,9 @@ namespace FileManager.Forms.Form1
             LoadDirectory();
         }
 
-        private void textBox_fileName_KeyDown(object sender, KeyEventArgs e)
+        private void listView_main_AfterLabelEdit(object sender, LabelEditEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                fileController.manager.Rename(SelectedFiles.Last(), pathController.currentPath + "\\" + textBox_fileName.Text);
-                textBox_fileName.Enabled = false;
-            }
-            if (e.KeyCode == Keys.Escape)
-            {
-                textBox_fileName.Enabled = false;
-            }
+            fileController.fileDistributor.Rename(SelectedFiles.Last(), pathController.currentPath + "\\" + e.Label);
             ReloadDirectory();
         }
 
@@ -155,6 +144,16 @@ namespace FileManager.Forms.Form1
             //{
             //    checkedListBox_buffer.Items.Add(item);
             //}
+        }
+
+        private void checkedListBox_buffer_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            int index = e.Index;
+
+            if (e.CurrentValue == CheckState.Unchecked)
+                CheckedFilesBuffer.Add(checkedListBox_buffer.Items[index].ToString());
+            else
+                CheckedFilesBuffer.Remove(checkedListBox_buffer.Items[index].ToString());
         }
     }
 }

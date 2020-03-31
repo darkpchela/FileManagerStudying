@@ -9,6 +9,14 @@ namespace FileManager.Classes
         public List<string> globalHistory { get; private set; }  = new List<string>();
         public int          localIndex    { get; private set; }  = 0;
 
+        internal PathController PathController
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
         private bool IsShifting = false;
 
         private void StartShifting()
