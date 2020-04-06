@@ -10,14 +10,10 @@ namespace FileManager.Forms.Form1
 {
     public partial class Form1
     {
-        MessageBoxButtons messageBoxButtons;
-        DialogResult      dialogResult;
-        string            message;
-        string            caption;
 
         private void toolStripMenuItem_add_Click(object sender, EventArgs e)//OK
         {
-            fileController.AddFilesToBuffer(SelectedFiles);
+            connector.fileDistributor.AddFilesToBuffer(SelectedFiles);
             SelectedFiles.Clear();
             RefreshBuffer();
         }
@@ -25,7 +21,7 @@ namespace FileManager.Forms.Form1
         {
             foreach (var file in CheckedFilesBuffer)
             {
-                fileController.fileDistributor.Copy(file.ToString(), pathController.currentPath);
+                connector.fileDistributor.Copy(file.ToString(), connector.pathController.currentPath);
             }
             ReloadDirectory();
             RefreshBuffer();
@@ -36,12 +32,12 @@ namespace FileManager.Forms.Form1
         {
             foreach (var file in CheckedFilesBuffer)
             {
-                fileController.fileDistributor.Move(file, pathController.currentPath); ;
+                connector.fileDistributor.Move(file, connector.pathController.currentPath); 
             }
             ReloadDirectory();
             RefreshBuffer();
             CheckedFilesBuffer.Clear();
-        }
+        }//OK
 
         private void ToolStripMenuItem_rename_Click(object sender, EventArgs e)//OK
         {
@@ -51,7 +47,7 @@ namespace FileManager.Forms.Form1
         private void ToolStripMenuItem_createFolder_Click(object sender, EventArgs e)
         {
             string name = "New folder";
-            fileController.fileDistributor.CreateDirectory(pathController.currentPath, name);
+            connector.fileDistributor.CreateDirectory(connector.pathController.currentPath, name);
             ReloadDirectory();
         }//OK
 
@@ -74,7 +70,7 @@ namespace FileManager.Forms.Form1
                 {
                     foreach (var item in SelectedFiles)
                     {
-                        fileController.fileDistributor.Delete(item);
+                        connector.fileDistributor.Delete(item);
                     }
                 }
                 else
@@ -86,7 +82,7 @@ namespace FileManager.Forms.Form1
         }//OK
         private void clearBufferToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            fileController.buffer.Clear();
+            connector.fileDistributor.ClearBuffer();
             CheckedFilesBuffer.Clear();
             RefreshBuffer();
         }//OK
@@ -94,7 +90,7 @@ namespace FileManager.Forms.Form1
         {
             foreach (var item in CheckedFilesBuffer)
             {
-                fileController.buffer.Remove(item);
+                connector.fileDistributor.RemoveFromBuffer(item);
             }
             RefreshBuffer();
         }//OK

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileManager.Classes;
 using FileManager.Forms.Form1;
+using System.Reflection;
 
 namespace FileManager.Forms.Form1
 {

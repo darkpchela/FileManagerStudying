@@ -9,13 +9,30 @@ namespace FileManager.Classes
 {
     class FileDistributor
     {
-        public  MessageHandler      exActionManager;
-        public  DialogOptionHandler overwriteOptions;
+        public event MessageEventHandler ExceptionAppeared;
+
+        private FileBuffer      fileBuffer;
+        private FileCopier      fileCopier;
+        private DirectoryCopier directoryCopier;
 
         private DirectoryInfo   dirInfo;
         private FileInfo        fileInfo;
 
-        private DialogOptions   option;
+        public FileDistributor()
+        {
+            fileCopier      = new FileCopier();
+            directoryCopier = new DirectoryCopier();
+            fileBuffer      = new FileBuffer();
+        }
+        private void OnExceptionAppeared(string message)
+        {
+            ExceptionAppeared?.Invoke(this, message);
+        }
+        public void SubscribeToAlreadyExistedItemAppearedEvent(DialogOptionEventHandler<ExistedItemAppearedEventArgs> handler)
+        {
+            fileCopier.AlreadyExistedItemAppeared += handler;
+            directoryCopier.AlreadyExistedItemAppeared += handler;
+        }//Rebuild later
 
         public void CreateDirectory(string parentDirectoryPath, string name) 
         {
@@ -26,7 +43,7 @@ namespace FileManager.Classes
             }
             catch(Exception ex)
             {
-                exActionManager?.Invoke(ex.Message);
+                OnExceptionAppeared(ex.Message);
             }
         }//OK
 
@@ -36,82 +53,34 @@ namespace FileManager.Classes
             fileInfo        = new FileInfo(fullName);
 
             if (!File.Exists(fullName))
-            { fileInfo.Create(); }
+                fileInfo.Create();
         }
 
         public async void CopyAsync(string fullName, string toDirectory)
         {
             await Task.Run(()=>Copy(fullName, toDirectory));
-        }
-        public void CopyRange(string[] fullNames, string toDirectory)
-        {
-            bool optionSetted = false;
-            int count = fullNames.Length;
-            while (count>0)
-            {
-                foreach (var file in fullNames)
-                {
-                    Copy(file, toDirectory);
-                }
-                count--;
-            }
-        }//Not ready
-        public void Copy(string fullName, string toDirectory, DialogOptions option=DialogOptions.Cancel)
+        }//Works shitty
+        public void Copy(string fullName, string toDirectory)
         {
             try
             {
                 if (PathValidator.IsDirectory(fullName))
                 {
-                    DirectoryCopier directoryCopier = new DirectoryCopier();
                     directoryCopier.SetDirectory(fullName);
-                    if (!directoryCopier.TryCopyDirectory(toDirectory))
-                    {
-                        //option = overwriteOptions?.Invoke() ?? DialogOptions.No;
-                        switch (option)
-                        {
-                            case DialogOptions.No:
-                                break;
-
-                            case DialogOptions.Yes:
-                                directoryCopier.TryCopyDirectory(toDirectory, true);
-                                break;
-
-                            case DialogOptions.Cancel:
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
+                    directoryCopier.Copy(toDirectory);
                 }
                 else
                 {
-                    FileCopier fileCopier = new FileCopier();
                     fileCopier.SetFile(fullName);
-                    if (!fileCopier.TryCopy(toDirectory))
-                    {
-                        option = overwriteOptions?.Invoke() ?? DialogOptions.Cancel;
-
-                        switch (option)
-                        {
-                            case DialogOptions.No:
-                                break;
-
-                            case DialogOptions.Yes:
-                                fileCopier.TryCopy(toDirectory, true);
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-
+                    fileCopier.Copy(toDirectory);
                 }
             }
             catch(Exception ex)
-            { exActionManager?.Invoke(ex.Message); }
+            { 
+                OnExceptionAppeared(ex.Message);
+            }
 
-        }//nearly ready
+        }//OK
 
         public void Delete(string fullName)//OK
         {
@@ -129,7 +98,7 @@ namespace FileManager.Classes
             }
             catch(Exception ex)
             {
-                exActionManager?.Invoke(ex.Message);
+                OnExceptionAppeared(ex.Message);
             }
         }
 
@@ -137,66 +106,24 @@ namespace FileManager.Classes
         {
             try
             {
-                string newPath    = "";
-                bool isDirectory  = false;
-                bool optionSetted = false;
-
-                fileInfo = new FileInfo(fullName);
-                newPath  = Path.Combine(toDirectory, fileInfo.Name);
-
                 if (PathValidator.IsDirectory(fullName))
                 {
-                    isDirectory = true;
-                    dirInfo = new DirectoryInfo(fullName);
+                    directoryCopier.SetDirectory(fullName);
+                    directoryCopier.Move(toDirectory);
                 }
-
-                if (fileInfo.Exists || dirInfo.Exists)
+                else
                 {
-                    if (File.Exists(newPath) || Directory.Exists(newPath))
-                    {
-                        if (!optionSetted)
-                        {
-                            option       = overwriteOptions?.Invoke() ?? DialogOptions.Cancel;
-                            optionSetted = true;
-                        }
-
-                        switch (option)
-                        {
-                            case DialogOptions.Yes:
-
-                                if (isDirectory)
-                                    dirInfo.MoveTo(newPath);
-                                else
-                                    fileInfo.MoveTo(newPath);
-                                break;
-
-                            case DialogOptions.No:
-                                break;
-
-                            case DialogOptions.Cancel:
-                                goto case DialogOptions.No;
-
-                            default:
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if (isDirectory)
-                            dirInfo.MoveTo(newPath);
-                        else
-                            fileInfo.MoveTo(newPath);
-                    }
+                    fileCopier.SetFile(fullName);
+                    fileCopier.Move(toDirectory);
                 }
-
 
             }
             catch (Exception ex)
             {
-                exActionManager?.Invoke(ex.Message);
+                OnExceptionAppeared(ex.Message);
             }
 
-        }//Nearly ready
+        }//OK
 
         public void Rename(string oldPath, string newPath)
         {
@@ -216,14 +143,37 @@ namespace FileManager.Classes
             catch(Exception ex)
             {
                 Directory.Move(oldPath + "_temp", oldPath);
-                exActionManager?.Invoke(ex.Message);
+                OnExceptionAppeared(ex.Message);
             }
         }//OK
-        public void Rename(string path, string oldName, string newName)
+        public void Rename(string directory, string oldName, string newName)
         {
-            string oldPath = Path.Combine(path, oldName);
-            string newPath = Path.Combine(path, newName);
-            this.Rename(oldPath, newPath);
+            string oldPath = Path.Combine(directory, oldName);
+            string newPath = Path.Combine(directory, newName);
+            Rename(oldPath, newPath);
         }//OK
+        public void AddFilesToBuffer(List<string> paths)//OK
+        {
+            foreach (var item in paths)
+            {
+                if (!fileBuffer.files.Contains(item) && (File.Exists(item) || Directory.Exists(item)))
+                    fileBuffer.Add(item);
+            }
+        }
+        public string[] GetFilesFromBuffer()
+        {
+            string[] files;
+            files = fileBuffer.files.ToArray();
+            return files;
+        }
+        public void ClearBuffer()
+        {
+            fileBuffer.Clear();
+        }
+
+        public void RemoveFromBuffer(string name)
+        {
+            fileBuffer.Remove(name);
+        }
     }
 }

@@ -68,7 +68,6 @@ namespace FileManager.Classes
             else
                 return false;
         }
-
         static public void FileCopyPathUpdate(ref string path)
         {
             FileInfo file = new FileInfo(path);

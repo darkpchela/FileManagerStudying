@@ -10,27 +10,24 @@ namespace FileManager.Classes
         public DirectoryInfo   currentDirectory { get; private set; }
         public FileInfo[]      files            { get; private set; }
         public DirectoryInfo[] directories      { get; private set; }
-        public DirectoryLoader(DirectoryInfo directory)
-        {
-            currentDirectory = directory;
-        }
-        public DirectoryLoader(string path)
+        public void SetDirectory(string path)
         {
             currentDirectory = new DirectoryInfo(path);
-        }
+        }//OK
+        public void SetDirectory(DirectoryInfo directory)
+        {
+            currentDirectory = directory;
+        }//OK
         public void LoadDirectory()
         {
             files       = currentDirectory.GetFiles();
             directories = currentDirectory.GetDirectories();
         }//OK
-
         public bool TryLoadDirectory()
         {
             try
             {
-                this.files       = currentDirectory.GetFiles();
-                this.directories = currentDirectory.GetDirectories();
-
+                LoadDirectory();
                 return true;
             }
             catch
@@ -39,7 +36,8 @@ namespace FileManager.Classes
             }
 
         }//OK
-        public static void GetAllFilesAndDirectoriesFromDirectory(string name, ref List<FileInfo> filesOut, ref List<DirectoryInfo> directoriesOut)
+        public static void GetAllFilesAndDirectoriesFromDirectory(
+            string name, ref List<FileInfo> filesOut, ref List<DirectoryInfo> directoriesOut)
         {
 
             if (Directory.Exists(name))
@@ -58,7 +56,7 @@ namespace FileManager.Classes
                 }
             }
        
-        }//OK
+        }//Maybe rebuild later
     }
 
 }

@@ -8,22 +8,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FileManager.Classes;
+using FileManager.Main;
 
 namespace FileManager.Forms.Form1
 {
     public partial class Form1 : Form
     {
+        FileManagerConnector connector = new FileManagerConnector();
         public Form1()
         {
             InitializeComponent();
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            pathController.excActionPath            += ShowExceptionMessage;
-            fileController.fileDistributor.exActionManager  += ShowExceptionMessage;
-            fileController.SelectedDirectoryChanged += ShowDirectoryInfo;
-            fileController.SelectedFileChanged      += ShowFileInfo;
-            fileController.fileDistributor.overwriteOptions += OverwriteDialog;
+            connector.pathController.ExceptionAppeared      += ShowExceptionMessage;
+            connector.fileDistributor.ExceptionAppeared     += ShowExceptionMessage;
+            connector.fileOperator.ExceptionAppeared        += ShowExceptionMessage;
+            connector.fileOperator.SelectedDirectoryChanged += ShowDirectoryInfo;
+            connector.fileOperator.SelectedFileChanged      += ShowFileInfo;
+            connector.fileDistributor.SubscribeToAlreadyExistedItemAppearedEvent(ShowOverwriteDialog);
+
+            //pathController.excActionPath                  += ShowExceptionMessage;
+            //fileDistributor.exActionManager  += ShowExceptionMessage;
+            //fileOperator.SelectedDirectoryChanged         += ShowDirectoryInfo;
+            //fileOperator.SelectedFileChanged              += ShowFileInfo;
+            //fileDistributor.SubscribeToAlreadyExistedItemAppearedEvent(ShowOverwriteDialog);
 
             comboBox_drives.Items.AddRange(WindowsDrivesInfo.drivesNames);
             comboBox_drives.SelectedIndex = 0;
@@ -37,7 +46,7 @@ namespace FileManager.Forms.Form1
         {
             tempPath = comboBox_drives.Text;
 
-            pathController.pathHistory.StopShifting();
+            connector.pathController.pathHistory.StopShifting();
             LoadDirectory();
         }
 
@@ -51,9 +60,9 @@ namespace FileManager.Forms.Form1
         private void comboBox_path_DropDown(object sender, EventArgs e)
         {
             comboBox_path.Items.Clear();
-            if (pathController.pathHistory.globalHistory.Count > 0)
+            if (connector.pathController.pathHistory.globalHistory.Count > 0)
             {
-                List<string> tempHistoryPath = pathController.pathHistory.globalHistory;
+                List<string> tempHistoryPath = connector.pathController.pathHistory.globalHistory;
                 tempHistoryPath = tempHistoryPath.Distinct().ToList();
                 tempHistoryPath.Reverse();
                 tempHistoryPath = tempHistoryPath.Take(20).ToList();
@@ -66,7 +75,7 @@ namespace FileManager.Forms.Form1
         {
             SelectedFiles.Clear();
             comboBox_path.Text = comboBox_path.Text.Replace(@"\\", @"\");
-            if (comboBox_path.Text != pathController.currentPath)
+            if (comboBox_path.Text != connector.pathController.currentPath)
             { comboBox_path.BackColor = Color.AliceBlue; }
             else
             { comboBox_path.BackColor = Color.White; }
@@ -74,20 +83,20 @@ namespace FileManager.Forms.Form1
 
         private void btn_Back_Click(object sender, EventArgs e)
         {
-            tempPath = pathController.pathHistory.GetPreviousElement();
+            tempPath = connector.pathController.pathHistory.GetPreviousElement();
 
             LoadDirectory();
         }
 
         private void btn_up_Click(object sender, EventArgs e)
         {
-            pathController.SetParentDirectoryPath();
+            connector.pathController.SetParentDirectoryPath();
             ReloadDirectory();
         }
 
         private void btn_next_Click(object sender, EventArgs e)
         {
-            tempPath = pathController.pathHistory.GetNextElement();
+            tempPath = connector.pathController.pathHistory.GetNextElement();
             LoadDirectory();
         }
 
@@ -98,7 +107,7 @@ namespace FileManager.Forms.Form1
             else
                 tempPath = comboBox_path.Text;
 
-            pathController.pathHistory.StopShifting();
+            connector.pathController.pathHistory.StopShifting();
             LoadDirectory();
         }
 
@@ -106,26 +115,26 @@ namespace FileManager.Forms.Form1
         {
             string currentSelectedItem = e.Item.Text;
 
-            tempPath = pathController.currentPath + "\\" + currentSelectedItem;
+            tempPath = connector.pathController.currentPath + "\\" + currentSelectedItem;
             tempPath = tempPath.Replace(@"\\", @"\");
 
             SelectedFiles.Clear();
 
             foreach (ListViewItem item in listView_main.SelectedItems)
             {
-                SelectedFiles.Add(pathController.currentPath +"\\"+ item.Text);
+                SelectedFiles.Add(connector.pathController.currentPath +"\\"+ item.Text);
             }
         }
 
         private void listView_main_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            pathController.pathHistory.StopShifting();
+            connector.pathController.pathHistory.StopShifting();
             LoadDirectory();
         }
 
         private void listView_main_AfterLabelEdit(object sender, LabelEditEventArgs e)
         {
-            fileController.fileDistributor.Rename(SelectedFiles.Last(), pathController.currentPath + "\\" + e.Label);
+            connector.fileDistributor.Rename(SelectedFiles.Last(), connector.pathController.currentPath + "\\" + e.Label);
             ReloadDirectory();
         }
 

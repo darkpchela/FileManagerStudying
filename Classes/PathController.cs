@@ -7,40 +7,63 @@ namespace FileManager.Classes
 {
     class PathController
     {
-        public MessageHandler excActionPath;
+        public event MessageEventHandler ExceptionAppeared;
+        public event EventHandler        DirectoryLoaded;
 
-        public History         pathHistory     = new History();
+        public History         pathHistory;
         public DirectoryLoader directoryLoader;
         public string currentPath { get; private set; }
-
+        
+        public PathController()
+        {
+            pathHistory     = new History();
+            directoryLoader = new DirectoryLoader();
+        }
+        private void OnExceptionAppeared(string message)
+        {
+            ExceptionAppeared?.Invoke(this, message);
+        }
+        private void OnDirectoryLoaded(EventArgs e)
+        {
+            DirectoryLoaded?.Invoke(this, e);
+        }
         public void SetPath(string path)
         {
             if (PathValidator.IsDirectory(path))
-                { currentPath = path.Replace(@"\\", @"\");        }
+                currentPath = path.Replace(@"\\", @"\");
             else
-                { currentPath = pathHistory.globalHistory.Last(); }
+                currentPath = pathHistory.globalHistory.Last();
         }
 
         public void SetParentDirectoryPath()
         {
-            try   { currentPath = Directory.GetParent(currentPath).ToString(); }
+            try
+            {
+                currentPath = Directory.GetParent(currentPath).ToString(); 
+            }
             catch (Exception ex)
-            { excActionPath?.Invoke(ex.Message); }
+            {
+                OnExceptionAppeared(ex.Message); 
+            }
         }     
         public void LoadDirectory()
         {
-            directoryLoader      = new DirectoryLoader(currentPath);
-            bool directoryLoaded = directoryLoader.TryLoadDirectory();
+            directoryLoader.SetDirectory(currentPath);
 
-            if (directoryLoaded)
+            try
             {
+                directoryLoader.LoadDirectory();
+
                 if (!pathHistory.globalHistory.Any() || pathHistory.globalHistory.Last() != currentPath)
                     pathHistory.UpdateHistory(currentPath);
+
+                EventArgs e = new EventArgs();
+                OnDirectoryLoaded(e);
             }
-            else
+            catch(Exception ex)
             {
                 currentPath = pathHistory.globalHistory.Last();
-                excActionPath?.Invoke("Not accessible path!");
+                OnExceptionAppeared(ex.Message);
             }
         }
 
