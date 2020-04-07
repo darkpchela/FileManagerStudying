@@ -162,13 +162,6 @@
             this.ToolStripMenuItem_createFile.Text = "Create File";
             this.ToolStripMenuItem_createFile.Click += new System.EventHandler(this.ToolStripMenuItem_createFile_Click);
             // 
-            // debugButtonToolStripMenuItem
-            // 
-            this.debugButtonToolStripMenuItem.Name = "debugButtonToolStripMenuItem";
-            this.debugButtonToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.debugButtonToolStripMenuItem.Text = "Debug Button";
-            this.debugButtonToolStripMenuItem.Click += new System.EventHandler(this.debugButtonToolStripMenuItem_Click);
-            // 
             // imageList_Icons
             // 
             this.imageList_Icons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_Icons.ImageStream")));

@@ -11,8 +11,6 @@ namespace FileManager.Classes.Copiers
     {
         event DialogOptionEventHandler<ExistedItemAppearedEventArgs> AlreadyExistedItemAppeared; 
         void Copy(string toDirectory, bool overwrite = false);
-        bool TryCopy(string toDirectory, bool overwrite = false);
         void Move(string toDirectory);
-        bool TryMove(string toDirectory);
     }
 }

@@ -7,9 +7,12 @@ using FileManager.Classes.Copiers;
 
 namespace FileManager.Classes
 {
-    class FileDistributor
+    class FileController
     {
+        public event EventHandler FileOperationCompleted;
+
         public event MessageEventHandler ExceptionAppeared;
+        public event EventHandler        BufferItemsChanged;
 
         private FileBuffer      fileBuffer;
         private FileCopier      fileCopier;
@@ -18,28 +21,43 @@ namespace FileManager.Classes
         private DirectoryInfo   dirInfo;
         private FileInfo        fileInfo;
 
-        public FileDistributor()
+        public FileController()
         {
             fileCopier      = new FileCopier();
             directoryCopier = new DirectoryCopier();
             fileBuffer      = new FileBuffer();
         }
+
+            /*Events<>*/
         private void OnExceptionAppeared(string message)
         {
             ExceptionAppeared?.Invoke(this, message);
         }
-        public void SubscribeToAlreadyExistedItemAppearedEvent(DialogOptionEventHandler<ExistedItemAppearedEventArgs> handler)
+        private void OnBufferItemsChanged(EventArgs e)
+        {
+            BufferItemsChanged?.Invoke(this, e);
+        }
+        private void OnFileOperationCompleted(EventArgs e)
+        {
+            FileOperationCompleted?.Invoke(this , e);
+        }
+        public void SubscribeToAlreadyExistedItemAppearedEvent(
+            DialogOptionEventHandler<ExistedItemAppearedEventArgs> handler)
         {
             fileCopier.AlreadyExistedItemAppeared += handler;
             directoryCopier.AlreadyExistedItemAppeared += handler;
         }//Rebuild later
+            
+            /*Events<.>*/
 
+            //FileOperations<>
         public void CreateDirectory(string parentDirectoryPath, string name) 
         {
             try
             {
                 dirInfo = new DirectoryInfo(parentDirectoryPath);
                 dirInfo.CreateSubdirectory(name);
+                OnFileOperationCompleted(EventArgs.Empty);
             }
             catch(Exception ex)
             {
@@ -74,6 +92,7 @@ namespace FileManager.Classes
                     fileCopier.SetFile(fullName);
                     fileCopier.Copy(toDirectory);
                 }
+                OnFileOperationCompleted(EventArgs.Empty);
             }
             catch(Exception ex)
             { 
@@ -95,6 +114,8 @@ namespace FileManager.Classes
                 }
                 else
                 {   fileInfo.Delete(); }
+
+                OnFileOperationCompleted(EventArgs.Empty);
             }
             catch(Exception ex)
             {
@@ -117,6 +138,7 @@ namespace FileManager.Classes
                     fileCopier.Move(toDirectory);
                 }
 
+                OnFileOperationCompleted(EventArgs.Empty);
             }
             catch (Exception ex)
             {
@@ -139,6 +161,8 @@ namespace FileManager.Classes
                     File.Move(oldPath, oldPath + "_temp");
                     File.Move(oldPath + "_temp", newPath);
                 }
+
+                OnFileOperationCompleted(EventArgs.Empty);
             }
             catch(Exception ex)
             {
@@ -146,12 +170,9 @@ namespace FileManager.Classes
                 OnExceptionAppeared(ex.Message);
             }
         }//OK
-        public void Rename(string directory, string oldName, string newName)
-        {
-            string oldPath = Path.Combine(directory, oldName);
-            string newPath = Path.Combine(directory, newName);
-            Rename(oldPath, newPath);
-        }//OK
+            //FileOperations<.>
+
+            //BufferOperations<>
         public void AddFilesToBuffer(List<string> paths)//OK
         {
             foreach (var item in paths)
@@ -159,6 +180,7 @@ namespace FileManager.Classes
                 if (!fileBuffer.files.Contains(item) && (File.Exists(item) || Directory.Exists(item)))
                     fileBuffer.Add(item);
             }
+            OnBufferItemsChanged(EventArgs.Empty);
         }
         public string[] GetFilesFromBuffer()
         {
@@ -169,11 +191,13 @@ namespace FileManager.Classes
         public void ClearBuffer()
         {
             fileBuffer.Clear();
+            OnBufferItemsChanged(EventArgs.Empty);
         }
-
         public void RemoveFromBuffer(string name)
         {
             fileBuffer.Remove(name);
+            OnBufferItemsChanged(EventArgs.Empty);
         }
+            //BufferOperations<.>
     }
 }

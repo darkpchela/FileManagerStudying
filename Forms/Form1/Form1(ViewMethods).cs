@@ -8,77 +8,65 @@ namespace FileManager.Forms.Form1
 {
      public partial class Form1
      {
-        //FileDistributor fileDistributor     = new FileDistributor();
-        //PathController pathController      = new PathController();
-        //FileOperator   fileOperator        = new FileOperator();
         List<string>   SelectedFiles       = new List<string>();
         List<string>   CheckedFilesBuffer  = new List<string>();
-        //----------------------------------
-        MessageBoxButtons messageBoxButtons;
-        DialogResult dialogResult;
-        string message;
-        string caption;
-        //------------------------------------
-        string tempPath = "";
 
-        private void RefreshBuffer()
+        private void RefreshBuffer(object sender, EventArgs e)
         {
             checkedListBox_buffer.Items.Clear();
-            foreach (var item in connector.fileDistributor.GetFilesFromBuffer())
+            foreach (var item in connector.fileController.GetFilesFromBuffer())
             {
                 checkedListBox_buffer.Items.Add(item);
             }
         }
-        private void RefreshPathText()
+        private void RefreshPathText(object sender, EventArgs e)
         {
             comboBox_path.Text = connector.pathController.currentPath;
         }
-        private void LoadListView()
+        private void ShowCurrentLoadedDirectory(object sender, EventArgs e)
         {
             listView_main.Clear();
-            foreach (var item in connector.pathController.directoryLoader.directories)
+            foreach (var item in connector.pathController.directoryDescriptor.childDirectories)
             {
                 listView_main.Items.Add(item.Name, 4);
             }
-            foreach (var item in connector.pathController.directoryLoader.files)
+            foreach (var item in connector.pathController.directoryDescriptor.childFiles)
             {
                 listView_main.Items.Add(item.Name, 3);
             }
         }
-        private void LoadDirectory()
+        private void ReloadCurrentDirectory(object sender, EventArgs e)
         {
-            connector.pathController.SetPath(tempPath);
-            connector.pathController.LoadDirectory();
-            LoadListView();
-            RefreshPathText();
+            connector.pathController.SetPath(connector.pathController.currentPath);
         }
-        private void ReloadDirectory()
-        {
-            connector.pathController.LoadDirectory();
-            LoadListView();
-            RefreshPathText();
-        }
-        private void ShowFileInfo(object sender, EventArgs e)
+        private void ShowFileInfo(object sender, SelectedFileChangedEventArgs e)
         {
             label_fileName.Text = "";
-            if (connector.fileOperator.FileSelected)
+            if (connector.fileDescriptor.FileSelected)
             {
-                label_fileName.Text += (((double)connector.fileOperator.currentSelectedFileInfo.Length) / 1024 / 1024).ToString("#.##") + "Mb" + " ";
-                label_fileName.Text += connector.fileOperator.currentSelectedFileInfo.Attributes.ToString() + " ";
+                if (e.isDirectory)
+                {
 
-                label_fileType.Text  = connector.fileOperator.currentSelectedFileInfo.Extension;
+                }
+                else
+                {
+                    label_fileName.Text += (((double)connector.fileDescriptor.currentSelectedFileInfo.Length) / 1024 / 1024).ToString("#.##") + "Mb" + " ";
+                    label_fileName.Text += connector.fileDescriptor.currentSelectedFileInfo.Attributes.ToString() + " ";
+
+                    label_fileType.Text = connector.fileDescriptor.currentSelectedFileInfo.Extension;
+                }
             }
         }
-        private void ShowDirectoryInfo(object sender, EventArgs e)
+        private void RefreshHistoryInfo(object sender, EventArgs e)
         {
-            label_fileName.Text = "";
-            if (connector.fileOperator.FileSelected)
-            {
-                label_fileType.Text = "Directory";
-            }
+
         }
 
-
+        //Form Messages<>
+        MessageBoxButtons messageBoxButtons;
+        DialogResult dialogResult;
+        string message;
+        string caption;
         private DialogOptions ShowOverwriteDialog(object sender, ExistedItemAppearedEventArgs e)
         {
             messageBoxButtons = MessageBoxButtons.YesNoCancel;
@@ -146,5 +134,6 @@ namespace FileManager.Forms.Form1
         {
             MessageBox.Show(message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+        //Form Messages<.>
     }
 }

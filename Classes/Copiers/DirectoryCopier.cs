@@ -11,9 +11,8 @@ namespace FileManager.Classes.Copiers
     class DirectoryCopier:ICopier
     {
         public event DialogOptionEventHandler<ExistedItemAppearedEventArgs>  AlreadyExistedItemAppeared;
-        public DirectoryInfo       currentDirectoryInfo             { get; private set; }
-        public List<DirectoryInfo> AllDirectoriesAtCurrentDirectory { get; private set; }
-        public List<FileInfo>      AllFilesAtCurrentDirectory       { get; private set; }
+
+        public DirectoryDescriptor directoryDescriptor;
 
         private DialogOptions currentSelectedOption;
 
@@ -24,27 +23,16 @@ namespace FileManager.Classes.Copiers
         }
         public void SetDirectory(DirectoryInfo directory)
         {
-            currentDirectoryInfo = directory;
+            directoryDescriptor = new DirectoryDescriptor();
+            directoryDescriptor.SetDirectory(directory);
+            directoryDescriptor.LoadAllSubFilesAndDirectories();
 
-            List<DirectoryInfo> tempDirectories = new List<DirectoryInfo>();
-            List<FileInfo>      tempFiles       = new List<FileInfo>();
-
-            DirectoryLoader.GetAllFilesAndDirectoriesFromDirectory(currentDirectoryInfo.FullName, ref tempFiles, ref tempDirectories);
-
-            AllDirectoriesAtCurrentDirectory = tempDirectories;
-            AllFilesAtCurrentDirectory       = tempFiles;
         }//OK
         public void SetDirectory(string path)
         {
-            currentDirectoryInfo = new DirectoryInfo(path);
-
-            List<DirectoryInfo> tempDirectories = new List<DirectoryInfo>();
-            List<FileInfo>      tempFiles       = new List<FileInfo>();
-
-            DirectoryLoader.GetAllFilesAndDirectoriesFromDirectory(currentDirectoryInfo.FullName, ref tempFiles, ref tempDirectories);
-
-            AllDirectoriesAtCurrentDirectory = tempDirectories;
-            AllFilesAtCurrentDirectory       = tempFiles;
+            directoryDescriptor = new DirectoryDescriptor();
+            directoryDescriptor.SetDirectory(path);
+            directoryDescriptor.LoadAllSubFilesAndDirectories();
         }//OK
 
         public void Copy(string toDirectory, bool overwrite = false)
@@ -52,29 +40,27 @@ namespace FileManager.Classes.Copiers
             currentSelectedOption = DialogOptions.Default;
 
             List<(string, string)> fileCollisions = new List<(string, string)>();
-            string deltaPath = currentDirectoryInfo.Parent.FullName;
-
-            currentSelectedOption = DialogOptions.Default;
+            string deltaPath = directoryDescriptor.currentDirectory.Parent.FullName;
 
             if (deltaPath == toDirectory)
             {
-                if (currentDirectoryInfo.FullName.Contains(" -copy"))
+                if (directoryDescriptor.currentDirectory.Name.Contains(" -copy"))
                 {
-                    toDirectory = currentDirectoryInfo.FullName;
+                    toDirectory = directoryDescriptor.currentDirectory.FullName;
                     PathValidator.FileCopyPathUpdate(ref toDirectory);
                 }
                 else
                 {
-                    toDirectory = currentDirectoryInfo.FullName + " -copy";
+                    toDirectory = directoryDescriptor.currentDirectory.FullName + " -copy";
                     PathValidator.FileCopyPathUpdate(ref toDirectory);
                 }
             }
             else
-                if (toDirectory.StartsWith(deltaPath))
+                if (toDirectory.StartsWith(directoryDescriptor.currentDirectory.FullName))
                 throw new Exception("The final folder is a child of the folder, in which it is located!");
 
 
-            foreach (var dir in AllDirectoriesAtCurrentDirectory)
+            foreach (var dir in directoryDescriptor.allDirectories)
             {
                 string tempDirectoryName = dir.FullName.Replace(deltaPath, toDirectory);
 
@@ -82,7 +68,7 @@ namespace FileManager.Classes.Copiers
                     Directory.CreateDirectory(tempDirectoryName);
             }
 
-            foreach (var file in AllFilesAtCurrentDirectory)
+            foreach (var file in directoryDescriptor.allFiles)
             {
                 string tempFilePath = file.FullName.Replace(deltaPath, toDirectory);
 
@@ -150,14 +136,18 @@ namespace FileManager.Classes.Copiers
         {
             currentSelectedOption = DialogOptions.Default;
 
-            string deltaPath = currentDirectoryInfo.Parent.FullName;
-            string newPath   = Path.Combine(toDirectory, currentDirectoryInfo.Name);
+            string deltaPath = directoryDescriptor.currentDirectory.Parent.FullName;
+            string newPath   = Path.Combine(toDirectory, directoryDescriptor.currentDirectory.Name);
 
             List<(string, string)> fileCollisions = new List<(string, string)>();
             List<string> tempCreatedDirectories   = new List<string>();
 
+            //-----------it can be solved in another way
+            if (toDirectory.StartsWith(directoryDescriptor.currentDirectory.FullName))
+                throw new Exception("The final folder is a child of the folder, in which it is located!");
+            //-----------------------------------------------
 
-            foreach (var dir in AllDirectoriesAtCurrentDirectory)
+            foreach (var dir in directoryDescriptor.allDirectories)
             {
                 string tempDirectoryName = dir.FullName.Replace(deltaPath, toDirectory);
 
@@ -165,7 +155,7 @@ namespace FileManager.Classes.Copiers
                     Directory.CreateDirectory(tempDirectoryName);
             }
 
-            foreach (var file in AllFilesAtCurrentDirectory)
+            foreach (var file in directoryDescriptor.allFiles)
             {
                 string tempFilePath = file.FullName.Replace(deltaPath, toDirectory);
 
@@ -212,11 +202,11 @@ namespace FileManager.Classes.Copiers
                             goto case DialogOptions.Yes;
 
                         default:
-                            fileCollisions.Clear();
-                            break;
+                            return;
                     }
                 }
             }
+            directoryDescriptor.currentDirectory.Delete(true);
         }//Probably works
 
         public bool TryMove(string toDirectory)

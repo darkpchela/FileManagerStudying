@@ -1,21 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace FileManager.Classes
+namespace FileManager.Classes.Etc
 {
      class History
     {
         public List<string> localHistory  { get; private set; }  = new List<string>();
         public List<string> globalHistory { get; private set; }  = new List<string>();
         public int          localIndex    { get; private set; }  = 0;
-
-        internal PathController PathController
-        {
-            get => default;
-            set
-            {
-            }
-        }
 
         private bool IsShifting = false;
 

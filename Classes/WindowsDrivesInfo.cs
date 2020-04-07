@@ -6,8 +6,6 @@ namespace FileManager.Classes
 {
     class WindowsDrivesInfo
     {
-        //Action excActionDrive;
-
         public static DriveInfo[] drivesInfo  { get; private set; }  = DriveInfo.GetDrives();
 
         public static string[]    drivesNames { get; private set; } = (from dr in drivesInfo select dr.Name).ToArray();

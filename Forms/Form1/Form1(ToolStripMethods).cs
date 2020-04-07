@@ -13,18 +13,15 @@ namespace FileManager.Forms.Form1
 
         private void toolStripMenuItem_add_Click(object sender, EventArgs e)//OK
         {
-            connector.fileDistributor.AddFilesToBuffer(SelectedFiles);
+            connector.fileController.AddFilesToBuffer(SelectedFiles);
             SelectedFiles.Clear();
-            RefreshBuffer();
         }
         private void ToolStripMenuItem_copy_Click(object sender, EventArgs e)
         {
             foreach (var file in CheckedFilesBuffer)
             {
-                connector.fileDistributor.Copy(file.ToString(), connector.pathController.currentPath);
+                connector.fileController.Copy(file.ToString(), connector.pathController.currentPath);
             }
-            ReloadDirectory();
-            RefreshBuffer();
             CheckedFilesBuffer.Clear();
         }//OK
 
@@ -32,10 +29,8 @@ namespace FileManager.Forms.Form1
         {
             foreach (var file in CheckedFilesBuffer)
             {
-                connector.fileDistributor.Move(file, connector.pathController.currentPath); 
+                connector.fileController.Move(file, connector.pathController.currentPath); 
             }
-            ReloadDirectory();
-            RefreshBuffer();
             CheckedFilesBuffer.Clear();
         }//OK
 
@@ -47,8 +42,7 @@ namespace FileManager.Forms.Form1
         private void ToolStripMenuItem_createFolder_Click(object sender, EventArgs e)
         {
             string name = "New folder";
-            connector.fileDistributor.CreateDirectory(connector.pathController.currentPath, name);
-            ReloadDirectory();
+            connector.fileController.CreateDirectory(connector.pathController.currentPath, name);
         }//OK
 
         private void ToolStripMenuItem_createFile_Click(object sender, EventArgs e)
@@ -70,29 +64,25 @@ namespace FileManager.Forms.Form1
                 {
                     foreach (var item in SelectedFiles)
                     {
-                        connector.fileDistributor.Delete(item);
+                        connector.fileController.Delete(item);
                     }
                 }
                 else
                     { SelectedFiles.Clear(); }
                
             }
-
-            ReloadDirectory();
         }//OK
         private void clearBufferToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            connector.fileDistributor.ClearBuffer();
+            connector.fileController.ClearBuffer();
             CheckedFilesBuffer.Clear();
-            RefreshBuffer();
         }//OK
         private void removeSelectedItemsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             foreach (var item in CheckedFilesBuffer)
             {
-                connector.fileDistributor.RemoveFromBuffer(item);
+                connector.fileController.RemoveFromBuffer(item);
             }
-            RefreshBuffer();
         }//OK
     }
 }

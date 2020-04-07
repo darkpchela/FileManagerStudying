@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace FileManager.Classes
+namespace FileManager.Classes.Etc
 {
     static class PathValidator
     {
