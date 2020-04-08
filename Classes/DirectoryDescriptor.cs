@@ -12,6 +12,8 @@ namespace FileManager.Classes
         public DirectoryInfo[] childDirectories { get; private set; }
         public FileInfo[]      allFiles         { get; private set; }
         public DirectoryInfo[] allDirectories   { get; private set; }
+        public long            directorySize    { get; private set; }
+
         public void SetDirectory(string path)
         {
             SetDirectory(new DirectoryInfo(path));
@@ -22,7 +24,6 @@ namespace FileManager.Classes
             childFiles       = currentDirectory.GetFiles();
             childDirectories = currentDirectory.GetDirectories();
         }//OK
-
         public void LoadAllSubFilesAndDirectories()
         {
             List<FileInfo>      tempAllFiles       = new List<FileInfo>();
@@ -31,8 +32,20 @@ namespace FileManager.Classes
 
             allFiles       = tempAllFiles.ToArray();
             allDirectories = tempAllDirectories.ToArray();
-        }
-        private void GetAllFilesAndDirectoriesFromDirectory(string name, ref List<FileInfo> filesOut, ref List<DirectoryInfo> directoriesOut)
+
+            GetCurrentDirectorySize();
+        }//OK
+
+       
+        private void GetCurrentDirectorySize()
+        {
+            foreach (var file in allFiles)
+            {
+                directorySize += file.Length;
+            }
+        }//OK
+        private void GetAllFilesAndDirectoriesFromDirectory(
+            string name, ref List<FileInfo> filesOut, ref List<DirectoryInfo> directoriesOut)
         { 
 
             if (Directory.Exists(name))
@@ -51,7 +64,7 @@ namespace FileManager.Classes
                 }
             }
        
-        }//Maybe rebuild later
+        }//OK
     }
 
 }
